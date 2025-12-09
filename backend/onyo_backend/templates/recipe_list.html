@@ -47,6 +47,11 @@
         .control-btn {
             margin-left: 0.5em;
         }
+
+        .detail {
+            color: lightgray;
+            font-size: 75%;
+        }
     </style>
     <script type="text/javascript">
         function main() {
@@ -94,7 +99,7 @@
 <body>
     <main>
         <nav>
-            <h1><a href="/">&#9001; {{ category.name }}</a></h1>
+            <h1><a href="/">&#9001; {{ category.name }} <span class="detail">({{ category.recipes | length }})</span></a></h1>
             <a id="all-btn" class="control-btn hidden" href="#">Show all</a>
             <a id="random-btn" class="control-btn" href="#">Random</a>
         </nav>
