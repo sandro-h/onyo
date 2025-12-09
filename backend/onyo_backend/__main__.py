@@ -78,10 +78,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
             self._reply(404, f"No recipe {recipe_id}")
             return
 
-        if "Referer" in self.headers:
-            back_link = urlparse(self.headers["Referer"]).path
-        else:
-            back_link = f"/categories/{list(recipe.categories)[0]}"
+        back_link = f"/categories/{list(recipe.categories)[0]}"
 
         self.reply_template(
             "recipe.html",

@@ -195,7 +195,13 @@
                 <div class="mise col{{mise_index.value % NUM_COLORS}}">
                     {% set mise_index.value = mise_index.value + 1 %}
                     {% endif %}
-                    <li>{{ ingr.text }}</li>
+                    <li>
+                        {% if ingr.link_id %}
+                        <a href="/recipes/{{ ingr.link_id }}">{{ ingr.text }}</a>
+                        {%else %}
+                        {{ ingr.text }}
+                        {% endif %}
+                    </li>
                     {% if ingr.mise == Mise.END %}
                 </div>
                 {% endif %}

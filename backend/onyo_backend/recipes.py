@@ -21,6 +21,7 @@ class Ingredient:
     name: str = ""
     text: str = ""
     mise: Mise = Mise.NONE
+    link_id: str = ""
 
 
 @dataclass
@@ -90,7 +91,22 @@ def load_recipes(recipe_dir, lmod) -> dict[str, Category]:
 
             categories[cat_id].recipes.append(recipe)
 
+    resolve_links(recipes)
+
     return categories, recipes
+
+
+def resolve_links(recipes: dict[str, Recipe]):
+    for r in recipes.values():
+        for i in r.ingredients:
+            if not i.link_id:
+                continue
+
+            linked_recipe = recipes.get(i.link_id)
+            if not linked_recipe:
+                print(f"WARN: Ingredient link {i.link_id} in {r.id} is not valid")
+
+            i.text = linked_recipe.name
 
 
 def load_recipe(path) -> Recipe:
@@ -122,6 +138,12 @@ def handle_ingredients(ingredient_lines, recipe: Recipe):
         ingr.name = m.group(1)
         return clean_ingr_name(ingr.name)
 
+    def handle_ingr_link(m):
+        ingr = recipe.ingredients[-1]
+        ingr.name = m.group(1)
+        ingr.link_id = m.group(1)
+        return clean_ingr_name(ingr.name)
+
     last_line = None
     for ingr_line in ingredient_lines:
         if ingr_line == ")":
@@ -130,6 +152,7 @@ def handle_ingredients(ingredient_lines, recipe: Recipe):
             ingr = Ingredient(mise=Mise.START if last_line == "(" else Mise.NONE)
             recipe.ingredients.append(ingr)
             ingr.text = re.sub(r"@([^@]+)@", handle_ingr_name, ingr_line)
+            ingr.text = re.sub(r"~([^~]+)~", handle_ingr_link, ingr.text)
             if ingr.name:
                 recipe.ingredient_map[ingr.name] = ingr
 
@@ -156,7 +179,9 @@ def handle_steps(step_lines, recipe: Recipe):
         if not seen:
             step.ingredients.append(ingr)
 
-        return f'<span class="ingr col{color_index}">{clean_ingr_name(ingr_name)}</span>'
+        return (
+            f'<span class="ingr col{color_index}">{clean_ingr_name(ingr_name)}</span>'
+        )
 
     def handle_timer(m):
         factors = {
@@ -176,12 +201,17 @@ def handle_steps(step_lines, recipe: Recipe):
         recipe.steps.append(step)
         ingr_indexes = {}
         for task_line in step_line["tasks"]:
-            clean_task = re.sub(r"@([^@]+)@", lambda m: handle_task_ingr_name(m, ingr_indexes), task_line)
+            clean_task = re.sub(
+                r"@([^@]+)@",
+                lambda m: handle_task_ingr_name(m, ingr_indexes),
+                task_line,
+            )
             clean_task = re.sub(
                 r"!(([^!]+) *(second|minute|hour)s?)!", handle_timer, clean_task
             )
             clean_task = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", clean_task)
             step.tasks.append(clean_task)
+
 
 def clean_ingr_name(ingr_name):
     return re.sub(r":[0-9]+$", "", ingr_name)
