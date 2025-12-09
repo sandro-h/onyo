@@ -139,7 +139,7 @@ def load_recipe(path) -> Recipe:
     for step_data in data.get("steps", []):
         step = Step()
         recipe.steps.append(step)
-        for task_line in step_data["subSteps"]:
+        for task_line in step_data["tasks"]:
             clean_task = re.sub(r"@([^@]+)@", handle_task_ingr_name, task_line)
             clean_task = re.sub(
                 r"!(([^!]+) *(second|minute|hour)s?)!", handle_timer, clean_task
