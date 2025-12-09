@@ -7,7 +7,7 @@ import yaml
 from functools import lru_cache
 from pathlib import Path
 
-RECIPE_DIR = Path(__file__).parent.parent.parent / "recipes"
+RECIPE_DIR = Path(__file__).parent.parent.parent / "data" / "recipes"
 NUM_COLORS = 8
 INGR_PATTERN_STRING = r"\$([^$]+)\$"
 TIMER_PATTERN_STRING = r"!(([^!]+) *(second|minute|hour)s?)!"

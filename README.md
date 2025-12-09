@@ -21,7 +21,7 @@ https://localhost:13012/ or https://ip:13012/
 Uses a simple Python backend with Jinja for html templating.
 This serves a very simple webpage that also functions as a Progressive Web App so it can be "installed" on the phone.
 
-All the data (recipes) come from the `recipes` folder. Recipe changes are hot loaded, so no need to restart the backend.
+All the data (recipes) come from the `data` folder. Recipe changes are hot loaded, so no need to restart the backend.
 
 The webpage contains `launchtimer://` links to start a timer on the phone. This only works if
 the companion TimerLauncher app is installed. It handles URLs with this scheme and creates
