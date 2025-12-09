@@ -17,12 +17,14 @@ input:
     - Rewarm enchilada sauce in pan
     - Season $chicken$ with salt and peper, fry up.
     - Remove chicken to a bowl/plate
-  - tasks:
+  - title: Veggies
+    tasks:
     - In same pan, sauté $onion$s, $bell pepper$ until soft
     - Rinse out $black beans$, add to pan, cook for a minute.
     - Add chicken back into pan
     - Take pan off heat
-  - tasks:
+  - title: Build
+    tasks:
     - 'Build enchiladas: spread some sauce on tortilla, add veggie/bean/chicken mix,
       add grated cheese'
     - Fold tortilla and place into oiled backing dish
@@ -114,7 +116,8 @@ output:
       mise: none
       linked_recipe_id:
   steps:
-  - tasks:
+  - title: ''
+    tasks:
     - parts:
       - text: Preheat oven to 175°C (top/bottom)
         style: ''
@@ -145,7 +148,8 @@ output:
       mise: none
       linked_recipe_id:
     timers: []
-  - tasks:
+  - title: Veggies
+    tasks:
     - parts:
       - text: 'In same pan, sauté '
         style: ''
@@ -200,7 +204,8 @@ output:
       mise: none
       linked_recipe_id:
     timers: []
-  - tasks:
+  - title: Build
+    tasks:
     - parts:
       - text: 'Build enchiladas: spread some sauce on tortilla, add veggie/bean/chicken
           mix, add grated cheese'
@@ -217,7 +222,8 @@ output:
         type: text
     ingredients: []
     timers: []
-  - tasks:
+  - title: ''
+    tasks:
     - parts:
       - text: 'Bake enchiladas in oven for '
         style: ''

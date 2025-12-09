@@ -62,6 +62,7 @@ class Task:
 @dataclass_json
 @dataclass
 class Step:
+    title: str = ""
     tasks: list[Task] = field(default_factory=list)
     ingredients: list[Ingredient] = field(default_factory=list)
     timers: list[Timer] = field(default_factory=list)
@@ -344,7 +345,7 @@ def handle_steps(step_lines, recipe: Recipe):
         return len(step.ingredients) - 1
 
     for step_line in step_lines:
-        step = Step()
+        step = Step(title=step_line.get("title", ""))
         recipe.steps.append(step)
         for task_line in step_line["tasks"]:
             task = Task()

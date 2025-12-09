@@ -167,7 +167,8 @@ output:
       mise: none
       linked_recipe_id:
   steps:
-  - tasks:
+  - title: ''
+    tasks:
     - parts:
       - text: 'Mix '
         style: ''
@@ -231,7 +232,8 @@ output:
       mise: end
       linked_recipe_id:
     timers: []
-  - tasks:
+  - title: ''
+    tasks:
     - parts:
       - text: 'Warm '
         style: ''
@@ -296,7 +298,8 @@ output:
       mise: none
       linked_recipe_id:
     timers: []
-  - tasks:
+  - title: ''
+    tasks:
     - parts:
       - text: Raise heat to medium-high and bring the mixture to a simmer, then reduce
           heat as necessary to maintain a gentle simmer. Cook, whisking often, for
@@ -306,7 +309,8 @@ output:
         type: text
     ingredients: []
     timers: []
-  - tasks:
+  - title: ''
+    tasks:
     - parts:
       - text: 'Remove from heat, then whisk in the '
         style: ''

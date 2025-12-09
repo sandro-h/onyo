@@ -40,12 +40,22 @@
             padding-top: 1em;
             padding-bottom: 1em;
             color: gray;
+            position: relative;
         }
 
         .switcher.selected {
             color: black;
             font-weight: bold;
             border-bottom: solid 2px rgb(0, 105, 170);
+        }
+
+        .switcher-subtitle {
+            position: absolute;
+            width: 100%;
+            font-size: 75%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
         }
 
         .ingredients {
@@ -226,7 +236,10 @@
         <nav class="sub-nav">
             <div class="switcher selected" data-tab="0">Ingr</div>
             {% for step in recipe.steps %}
-            <div class="switcher" data-tab="{{loop.index}}">{{loop.index}}</div>
+            <div class="switcher" data-tab="{{loop.index}}">
+                <div>{{loop.index}}</div>
+                <div class="switcher-subtitle">{{ step.title }}</div>
+            </div>
             {% endfor %}
         </nav>
 
