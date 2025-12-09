@@ -1,3 +1,4 @@
+from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import Enum, auto
 import math
@@ -8,7 +9,15 @@ from pathlib import Path
 
 RECIPE_DIR = Path(__file__).parent.parent.parent / "recipes"
 NUM_COLORS = 8
-INGR_PATTERN = re.compile(r"\$([^$]+)\$")
+INGR_PATTERN_STRING = r"\$([^$]+)\$"
+TIMER_PATTERN_STRING = r"!(([^!]+) *(second|minute|hour)s?)!"
+BOLD_PATTERN_STRING = r"\*\*([^*]+)\*\*"
+INGR_PATTERN = re.compile(INGR_PATTERN_STRING)
+TIMER_PATTERN = re.compile(TIMER_PATTERN_STRING)
+BOLD_PATTERN = re.compile(BOLD_PATTERN_STRING)
+TASK_SPLIT_PATTERN = re.compile(
+    f"({INGR_PATTERN_STRING}|{TIMER_PATTERN_STRING}|{BOLD_PATTERN_STRING})"
+)
 INGR_LINK_PATTERN = re.compile(r"~([^~]+)~")
 
 
@@ -33,10 +42,37 @@ class Timer:
 
 
 @dataclass
+class Task:
+    parts: list = field(default_factory=list)
+
+
+@dataclass
 class Step:
-    tasks: list[str] = field(default_factory=list)
+    tasks: list[Task] = field(default_factory=list)
     ingredients: list[Ingredient] = field(default_factory=list)
     timers: list[Timer] = field(default_factory=list)
+
+
+@dataclass
+class TextPart:
+    text: str
+    style: str = ""
+    type: str = "text"
+
+
+@dataclass
+class IngredientPart:
+    name: str
+    text: str
+    color_index: int = 0
+    type: str = "ingredient"
+
+
+@dataclass
+class TimerPart:
+    text: str
+    seconds: int
+    type: str = "timer"
 
 
 @dataclass
@@ -135,85 +171,141 @@ def load_recipe(path) -> Recipe:
 
 
 def handle_ingredients(ingredient_lines, recipe: Recipe):
-    def handle_ingr_name(m):
-        ingr = recipe.ingredients[-1]
-        ingr.name = m.group(1)
-        return clean_ingr_name(ingr.name)
-
-    def handle_ingr_link(m):
-        ingr = recipe.ingredients[-1]
-        ingr.name = m.group(1)
-        ingr.link_id = m.group(1)
-        return clean_ingr_name(ingr.name)
-
     last_line = None
     for ingr_line in ingredient_lines:
         if ingr_line == ")":
             recipe.ingredients[-1].mise = Mise.END
         elif ingr_line != "(":
-            ingr = Ingredient(mise=Mise.START if last_line == "(" else Mise.NONE)
+            ingr = handle_ingredient(ingr_line)
+            if last_line == "(":
+                ingr.mise = Mise.START
+
             recipe.ingredients.append(ingr)
-            ingr.text = re.sub(INGR_PATTERN, handle_ingr_name, ingr_line)
-            ingr.text = re.sub(INGR_LINK_PATTERN, handle_ingr_link, ingr.text)
+
             if ingr.name:
                 recipe.ingredient_map[ingr.name] = ingr
 
         last_line = ingr_line
 
 
+def handle_ingredient(ingr_line) -> Ingredient:
+    text, name = sub_and_keep_match(
+        INGR_PATTERN,
+        clean_ingr_name,
+        ingr_line,
+    )
+    text, link_id = sub_and_keep_match(
+        INGR_LINK_PATTERN,
+        clean_ingr_name,
+        text,
+    )
+
+    return Ingredient(
+        name=name,
+        text=text,
+        link_id=link_id,
+    )
+
+
 def handle_steps(step_lines, recipe: Recipe):
-    def handle_task_ingr_name(m, ingr_indexes):
-        step = recipe.steps[-1]
 
+    def handle_special_part_match(match, step):
+        ingr_match = INGR_PATTERN.match(match)
+        if ingr_match:
+            ingr_part = handle_task_ingredient(ingr_match)
+            ingr_index_in_step = add_ingredient_to_step(ingr_part, step)
+            ingr_part.color_index = ingr_index_in_step % NUM_COLORS
+            task.parts.append(ingr_part)
+            return
+
+        timer_match = TIMER_PATTERN.match(match)
+        if timer_match:
+            task.parts.append(handle_task_timer(timer_match))
+            return
+
+        bold_match = BOLD_PATTERN.match(match)
+        if bold_match:
+            task.parts.append(
+                TextPart(
+                    text=bold_match.group(1),
+                    style="bold",
+                )
+            )
+
+    def handle_task_ingredient(m):
         ingr_name = m.group(1)
-        seen = ingr_name in ingr_indexes
-        ingr_index = ingr_indexes.get(ingr_name, len(step.ingredients))
-        ingr_indexes[ingr_name] = ingr_index
-        color_index = ingr_index % NUM_COLORS
-        ingr = recipe.ingredient_map.get(
-            ingr_name,
-            Ingredient(
-                name=ingr_name,
-                text=clean_ingr_name(ingr_name),
-            ),
+        return IngredientPart(
+            name=ingr_name,
+            text=clean_ingr_name(ingr_name),
         )
 
-        if not seen:
-            step.ingredients.append(ingr)
-
-        return (
-            f'<span class="ingr col{color_index}">{clean_ingr_name(ingr_name)}</span>'
-        )
-
-    def handle_timer(m):
+    def handle_task_timer(m):
         factors = {
             "second": 1,
             "minute": 60,
             "hour": 3600,
         }
 
-        full = m.group(1)
+        text = m.group(1)
         amount = float(m.group(2))
         unit = m.group(3)
         seconds = math.floor(factors[unit] * amount)
-        return f'<span class="timer"><a href="launchtimer://?seconds={seconds}&title={recipe.name}">{full}</a></span>'
+        return TimerPart(text=text, seconds=seconds)
+
+    def add_ingredient_to_step(ingr_part: IngredientPart, step: Step):
+        ind = index_of(step.ingredients, lambda ingr: ingr.name == ingr_part.name)
+        if ind >= 0:
+            return ind
+
+        ingr = recipe.ingredient_map.get(ingr_part.name)
+        if ingr is None:
+            print(
+                f"WARNING: Task ingredient '{ingr_part.name}' is not part of recipe ({recipe.name} step {len(recipe.steps)})"
+            )
+            ingr = Ingredient(
+                name=ingr_part.name,
+                text=ingr_part.text,
+            )
+        step.ingredients.append(ingr)
+
+        return len(step.ingredients) - 1
 
     for step_line in step_lines:
         step = Step()
         recipe.steps.append(step)
-        ingr_indexes = {}
         for task_line in step_line["tasks"]:
-            clean_task = re.sub(
-                INGR_PATTERN,
-                lambda m: handle_task_ingr_name(m, ingr_indexes),
-                task_line,
-            )
-            clean_task = re.sub(
-                r"!(([^!]+) *(second|minute|hour)s?)!", handle_timer, clean_task
-            )
-            clean_task = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", clean_task)
-            step.tasks.append(clean_task)
+            task = Task()
+
+            k = 0
+            for m in re.finditer(TASK_SPLIT_PATTERN, task_line):
+                if m.start() > k:
+                    task.parts.append(TextPart(text=task_line[k : m.start()]))
+
+                handle_special_part_match(m.group(), step)
+
+                k = m.end()
+
+            if k < len(task_line) - 1:
+                task.parts.append(TextPart(text=task_line[k:]))
+
+            step.tasks.append(task)
 
 
 def clean_ingr_name(ingr_name):
     return re.sub(r":[0-9]+$", "", ingr_name)
+
+
+def sub_and_keep_match(pattern, repl_func, line):
+    match = None
+
+    def handle_match(m):
+        nonlocal match
+        match = m.group(1)
+        return repl_func(match)
+
+    replaced = re.sub(pattern, handle_match, line)
+    return replaced, match
+
+
+def index_of(list, predicate):
+    return next((i for i, e in enumerate(list) if predicate(e)), -1)

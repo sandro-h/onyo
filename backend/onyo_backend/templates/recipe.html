@@ -104,6 +104,10 @@
         .ingr {
             font-weight: bold;
         }
+
+        .bold {
+            font-weight: bold;
+        }
     </style>
     <script type="text/javascript">
 
@@ -214,7 +218,17 @@
             <section>
                 <ol>
                     {% for task in step.tasks %}
-                    <li>{{ task|safe }}</li>
+                    <li>
+                        {%- for part in task.parts -%}
+                            {%- if part.type == "text" -%}
+                                <span class="{{ part.style }}">{{- part.text -}}</span>
+                            {%- elif part.type == "ingredient" -%}
+                                <span class="ingr col{{ part.color_index }}">{{ part.text }}</span>
+                            {%- elif part.type == "timer" -%}
+                                <span class="timer"><a href="launchtimer://?seconds={{ part.seconds }}&title={{ recipe.name }}">{{ part.text }}</a></span>
+                            {%- endif -%}
+                        {%- endfor -%}
+                    </li>
                     {% endfor %}
                 </ol>
             </section>
