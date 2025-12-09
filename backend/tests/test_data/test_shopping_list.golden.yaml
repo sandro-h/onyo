@@ -1,30 +1,23 @@
 input:
   shopping_links:
-    links:
-      bell pepper:
-        link: https://www.migros.ch/de/product/271708513200
-      yellow onion:
-        link: https://www.migros.ch/de/product/mo/4212237
-      diced chicken:
-        link: https://www.migros.ch/de/product/241100409000
-      cheddar:
-        link: https://www.migros.ch/de/product/212487500000
-      black beans:
-        link: https://www.migros.ch/de/product/157270000000
-      big tortillas:
-        link: https://www.migros.ch/de/product/158564400000
+    bell pepper: https://www.migros.ch/de/product/271708513200
+    yellow onion: https://www.migros.ch/de/product/mo/4212237
+    diced chicken: https://www.migros.ch/de/product/241100409000
+    cheddar: unknown
+    black bean: https://www.migros.ch/de/product/157270000000
+    big tortilla: ignore
   recipe:
     name: Enchiladas
     icon: 🌯
     category: Meal
     ingredients:
-    - Diced $chicken$                           [diced chicken]
-    - 1 white $onion$, diced                    [yellow onion]
-    - 1 $bell pepper$, diced                    [bell pepper]
-    - 1 can of $black beans$                    [black beans]
+    - $Diced chicken$
+    - 1 $yellow onion$, diced
+    - 1 $bell pepper$, diced
+    - 1 can of $black beans$
     - ~enchiladasauce~
-    - 3/4 block of $cheddar$                    [cheddar]
-    - 6 big $tortillas$                         [big tortillas]
+    - 3/4 block of $cheddar$
+    - 6 big $big tortillas$
     steps:
     - tasks:
       - Preheat oven to 175°C (top/bottom)
@@ -48,7 +41,7 @@ output:
   items:
   - text: Diced chicken
     link: https://www.migros.ch/de/product/241100409000
-  - text: 1 white onion, diced
+  - text: 1 yellow onion, diced
     link: https://www.migros.ch/de/product/mo/4212237
   - text: 1 bell pepper, diced
     link: https://www.migros.ch/de/product/271708513200
@@ -57,6 +50,6 @@ output:
   - text: enchiladasauce
     link: ''
   - text: 3/4 block of cheddar
-    link: https://www.migros.ch/de/product/212487500000
-  - text: 6 big tortillas
-    link: https://www.migros.ch/de/product/158564400000
+    link: ''
+  - text: 6 big big tortillas
+    link: ''

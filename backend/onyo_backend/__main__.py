@@ -7,7 +7,7 @@ from urllib.parse import unquote_plus
 import yaml
 
 from .ideas import Idea, add_idea, delete_idea, list_ideas_for_html
-from .shopping_list import assemble_shopping_list, get_shopping_links
+from .shopping_list import assemble_shopping_list, get_shopping_ingredients
 from .recipes import NUM_COLORS, Mise, load_recipe, load_recipe_yaml, save_recipe_yaml
 from onyo_backend.recipes import list_recipes
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -98,8 +98,8 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         if not recipe:
             return
 
-        shopping_links = get_shopping_links()
-        shopping_list = assemble_shopping_list(recipe, shopping_links)
+        shopping_ingredients = get_shopping_ingredients()
+        shopping_list = assemble_shopping_list(recipe, shopping_ingredients)
         link = recipe_link(recipe_id)
         back_link = f"/onyo/categories/{list(recipe.categories)[0]}"
 

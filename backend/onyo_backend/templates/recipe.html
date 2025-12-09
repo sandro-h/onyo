@@ -318,7 +318,11 @@
 
             <textarea id="shopping-list">
 {%- for item in shopping_list.items %}
+{%- if item.link %}
 {{ item.link }} {{ item.text }}
+{%- else %}
+{{ item.text }}
+{%- endif %}
 {%- endfor -%}
             </textarea>
         </div>

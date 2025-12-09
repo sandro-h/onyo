@@ -1,6 +1,7 @@
 dataclasses-json
 Jinja2
 PyYAML
+typer
 
 # dev
 jurigged

@@ -14,6 +14,24 @@ location /onyo {
 }
 ```
 
+## Writing recipes
+
+### Update shopping links
+
+```shell
+.\cli.ps1 update-shopping-links
+```
+
+Will warn about missing links and mention new ingredients (only on first execution).
+
+**Pay attention to duplicate ingredients with slightly different names and try to align them in the recipes.**
+
+To see where the ingredients comes from:
+
+```shell
+.\cli.ps1 update-shopping-links --origins
+```
+
 ## Development
 
 Uses a simple Python backend with Jinja for html templating.

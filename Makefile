@@ -1,6 +1,6 @@
 .PHONY: lint
 lint:
-	flake8 backend/onyo_backend
+	flake8 backend/onyo_backend backend/cli backend/tests
 
 .PHONY: test
 test:

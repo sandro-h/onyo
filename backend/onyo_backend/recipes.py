@@ -16,7 +16,6 @@ INGR_PATTERN_STRING = r"\$([^$]+)\$"
 TIMER_PATTERN_STRING = r"!(([^!]+) *(second|minute|hour)s?)!"
 BOLD_PATTERN_STRING = r"\*\*([^*]+)\*\*"
 INGR_PATTERN = re.compile(INGR_PATTERN_STRING)
-INGR_UID_PATTERN = re.compile(r"\s*\[([^\]]+)\]$")
 TIMER_PATTERN = re.compile(TIMER_PATTERN_STRING)
 BOLD_PATTERN = re.compile(BOLD_PATTERN_STRING)
 TASK_SPLIT_PATTERN = re.compile(
@@ -35,7 +34,6 @@ class Mise(StrEnum):
 @dataclass_json
 @dataclass
 class Ingredient:
-    uid: str = ""
     name: str = ""
     text: str = ""
     mise: Mise = field(
@@ -176,7 +174,7 @@ def save_recipe_yaml(recipe_id, recipe_yaml):
 def load_recipes(
     recipe_dir,
     lmod,  # pylint: disable=unused-argument
-) -> tuple[dict[str, Category], list[Recipe]]:
+) -> tuple[dict[str, Category], dict[str, Recipe]]:
     print("Reloading recipes")
     categories = {}
     recipes = {}
@@ -277,16 +275,10 @@ def handle_ingredients(ingredient_lines, recipe: Recipe):
 
 
 def handle_ingredient(ingr_line) -> Ingredient:
-    text, uid = sub_and_keep_match(
-        INGR_UID_PATTERN,
-        lambda _: "",
-        ingr_line,
-    )
-
     text, name = sub_and_keep_match(
         INGR_PATTERN,
         clean_ingr_name,
-        text,
+        ingr_line,
     )
 
     text, link_id = sub_and_keep_match(
@@ -296,10 +288,9 @@ def handle_ingredient(ingr_line) -> Ingredient:
     )
 
     return Ingredient(
-        uid=uid,
         name=name,
         text=text,
-        linked_recipe_id=link_id,
+        linked_recipe_id=None if link_id is None else link_id.lower(),
     )
 
 
@@ -433,3 +424,20 @@ def sub_and_keep_match(pattern, repl_func, line):
 
 def index_of(lst, predicate):
     return next((i for i, e in enumerate(lst) if predicate(e)), -1)
+
+
+def normalize_ingr_name_for_shopping(name: str):
+    ALIASES = {
+        "egg yolk": "egg",
+        "bay leave": "bay leaf",
+        "potatoe": "potato",
+        "tomatoe": "tomato",
+    }
+    name = name.lower()
+    # Remove numeric suffix
+    name = re.sub(r":[0-9]+$", "", name)
+    # Remove plural 's' (doesn't always make correct words, but good enough)
+    name = re.sub(r"s$", "", name)
+    # Normalize aliases
+    name = ALIASES.get(name, name)
+    return name
