@@ -55,8 +55,10 @@ python -m jurigged -m onyo_backend
 Renew cert:
 
 ```shell
-openssl req -newkey rsa:2048 -keyout key.pem -x509 -days 3650 -out certificate.pem -subj "/C=CH/CN=192.168.1.28" -addext "subjectAltName = DNS:localhost"
+openssl req -newkey rsa:2048 -keyout key.pem -x509 -days 3650 -out certificate.pem -subj "/C=CH/CN=192.168.1.28" -addext "subjectAltName = DNS:localhost,IP:192.168.1.28"
 ```
+
+**Note:** Git bash tries to treat subj as a path. Use openssl directly `C:\Program Files\Git\usr\bin\openssl.exe`.
 
 Tests and linting:
 
