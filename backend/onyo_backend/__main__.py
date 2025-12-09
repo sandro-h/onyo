@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from pathlib import Path
 import re
 import http.server
@@ -14,7 +15,11 @@ def main():
     with http.server.ThreadingHTTPServer(("", PORT), SimpleRequestHandler) as httpd:
         ssl_ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         ssl_ctx.check_hostname = False
-        ssl_ctx.load_cert_chain(certfile="certificate.pem", keyfile="key.pem")
+        ssl_ctx.load_cert_chain(
+            certfile="certificate.pem",
+            keyfile="key.pem",
+            password=os.getenv("PASSPHRASE"),
+        )
         httpd.socket = ssl_ctx.wrap_socket(httpd.socket, server_side=True)
 
         print(f"Listening on port http://localhost:{PORT}")
@@ -36,32 +41,21 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*args, directory=Path(__file__).parent, **kwargs)
 
     def do_GET(self):
-        tm_total = time.time()
-        try:
-            if self.path.startswith("/static"):
-                return super().do_GET()
+        if self.path.startswith("/static"):
+            return super().do_GET()
 
-            if self.path == "/favicon.ico":
-                return self._reply(404, "Not found")
+        if self.path == "/favicon.ico":
+            return self._reply(404, "Not found")
 
-            for pattern, route in self.routes.items():
-                m = re.fullmatch(pattern, self.path)
-                if m:                
-                    tm = time.time()
-                    try:            
-                        if m.groups():
-                            return route(*m.groups())
+        for pattern, route in self.routes.items():
+            m = re.fullmatch(pattern, self.path)
+            if m:
+                if m.groups():
+                    return route(*m.groups())
 
-                        return route()
-                    finally:
-                        d = (time.time() - tm) * 1000
-                        print(f"{d}ms")
+                return route()
 
-            self._reply(404, "Not found")
-        finally:
-            d = (time.time() - tm_total) * 1000
-            print(f"total: {d}ms")
-
+        self._reply(404, "Not found")
 
     def render_categories(self):
         categories = list_recipes()

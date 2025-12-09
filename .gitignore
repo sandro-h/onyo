@@ -1,6 +1,8 @@
 # Backend
 __pycache__/
 venv/
+.passphrase
+backend.log
 
 # TimerLauncher
 *.iml
