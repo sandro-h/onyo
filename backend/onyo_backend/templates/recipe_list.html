@@ -15,6 +15,20 @@
             list-style-type: none;
         }
 
+        .hidden {
+            display: none !important;
+        }
+
+        nav {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        nav>h1 {
+            flex-grow: 1;
+        }
+
         section {
             text-align: center;
         }
@@ -28,12 +42,59 @@
             float: right;
             opacity: 0.6;
         }
+
+        .control-btn {
+            margin-left: 0.5em;
+        }
     </style>
+    <script type="text/javascript">
+        let lastPick = -1;
+
+        function main() {
+            document.getElementById('random-btn').addEventListener('click', _ => pickRandom());
+            document.getElementById('all-btn').addEventListener('click', _ => showAll());
+        }
+
+        function pickRandom() {
+            const meals = document.querySelectorAll('section li');
+
+            let pick = -1;
+            do {
+                pick = Math.floor(Math.random() * meals.length);
+            } while (pick == lastPick || meals.length == 1);
+            lastPick = pick;
+
+            document.getElementById('all-btn').classList.remove('hidden');
+
+            meals.forEach((m, i) => {
+                if (i !== pick) {
+                    m.classList.add('hidden');
+                }
+                else {
+                    m.classList.remove('hidden');
+                }
+            })
+        }
+
+        function showAll() {
+            const meals = document.querySelectorAll('section li');
+            meals.forEach((m, i) => {
+                m.classList.remove('hidden');
+            })
+            document.getElementById('all-btn').classList.add('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', main);
+    </script>
 </head>
 
 <body>
     <main>
-        <h1><a href="/">&#9001; {{ category.name }}</a></h1>
+        <nav>
+            <h1><a href="/">&#9001; {{ category.name }}</a></h1>
+            <a id="all-btn" class="control-btn hidden" href="#">Show all</a>
+            <a id="random-btn" class="control-btn" href="#">Random</a>
+        </nav>
         <section>
             <ul>
                 {% for recipe in category.recipes %}

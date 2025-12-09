@@ -48,3 +48,18 @@ a.link-btn:focus {
     display: inline-block;
     margin-bottom: 0.5em;
 }
+
+a.control-btn,
+a.control-btn:hover,
+a.control-btn:visited,
+a.control-btn:active,
+a.control-btn:focus {
+    font-size: 110%;
+    text-decoration: none;
+    padding: 2px;
+    background-color: lightgray;
+    border-radius: 5px;
+    color: black;
+    box-shadow: 0px 1px 3px #aaa;
+    display: inline-block;
+}
