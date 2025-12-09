@@ -3,9 +3,11 @@ import re
 import http.server
 from urllib.parse import unquote_plus
 
+import yaml
+
 from .ideas import Idea, add_idea, delete_idea, list_ideas
 from .shopping_list import assemble_shopping_list, get_shopping_links
-from .recipes import NUM_COLORS, Mise
+from .recipes import NUM_COLORS, Mise, load_recipe, load_recipe_yaml, save_recipe_yaml
 from onyo_backend.recipes import list_recipes
 from jinja2 import Environment, PackageLoader, select_autoescape
 
@@ -28,13 +30,15 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.routes = {
             r"/onyo": self.render_categories,
             r"/onyo/categories/([^/]+)": self.render_recipe_list,
-            r"/onyo/recipes/([^/]+)": self.render_recipe,
+            r"/onyo/recipes/([^/]+)/?": self.render_recipe,
+            r"/onyo/recipes/([^/]+)/edit": self.render_edit_recipe,
             r"/onyo/ideas": self.render_ideas,
         }
 
         self.post_routes = {
             r"/onyo/ideas": self.add_idea,
             r"/onyo/ideas/([^/]+)": self.delete_idea,
+            r"/onyo/recipes/([^/]+)/edit": self.edit_recipe,
         }
 
         super().__init__(*args, directory=Path(__file__).parent, **kwargs)
@@ -76,15 +80,13 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.reply_template("recipe_list.html", category=category)
 
     def render_recipe(self, recipe_id):
-        _, recipes = list_recipes()
-        shopping_links = get_shopping_links()
-
-        recipe = recipes.get(recipe_id.lower())
+        recipe = self.lookup_recipe(recipe_id)
         if not recipe:
-            self._reply(404, f"No recipe {recipe_id}")
             return
 
+        shopping_links = get_shopping_links()
         shopping_list = assemble_shopping_list(recipe, shopping_links)
+        link = self.recipe_link(recipe_id)
         back_link = f"/onyo/categories/{list(recipe.categories)[0]}"
 
         self.reply_template(
@@ -93,8 +95,57 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
             shopping_list=shopping_list,
             Mise=Mise,
             NUM_COLORS=NUM_COLORS,
+            link=link,
             back_link=back_link,
         )
+
+    def render_edit_recipe(self, recipe_id):
+        recipe = self.lookup_recipe(recipe_id)
+        if not recipe:
+            return
+
+        recipe_yaml = load_recipe_yaml(recipe.id)
+
+        self.reply_template(
+            "edit_recipe.html",
+            recipe=recipe,
+            recipe_yaml=recipe_yaml,
+        )
+
+    def edit_recipe(self, recipe_id):
+        recipe = self.lookup_recipe(recipe_id)
+        if not recipe:
+            return
+
+        body_data = self.get_body_text()
+        # poor man's form parsing, since it's only one value
+        recipe_yaml = unquote_plus(body_data[len("recipe_yaml=") :]).replace("\r", "")
+
+        # Try to load the recipe to make sure it's valid
+        try:
+            data = yaml.safe_load(recipe_yaml)
+            load_recipe(data, recipe_id.lower())
+        except Exception as e:
+            self._reply(400, f"Invalid recipe: {e}")
+            return
+
+        save_recipe_yaml(recipe_id, recipe_yaml)
+
+        # redirect to avoid repost on refresh
+        self.redirect(self.recipe_link(recipe_id))
+
+    def recipe_link(self, recipe_id):
+        return f"/onyo/recipes/{recipe_id}"
+
+    def lookup_recipe(self, recipe_id):
+        _, recipes = list_recipes()
+
+        recipe = recipes.get(recipe_id.lower())
+        if not recipe:
+            self._reply(404, f"No recipe {recipe_id}")
+            return None
+
+        return recipe
 
     def render_ideas(self):
         ideas = list_ideas()

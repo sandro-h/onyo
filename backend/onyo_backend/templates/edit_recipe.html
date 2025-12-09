@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Edit {{ recipe.name }} - Onyo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/x-icon" href="/onyo/static/logo192.png">
+    <link rel="stylesheet" href="/onyo/static/style.css">
+    <style type="text/css">
+        .control-btn {
+            margin-left: 0.5em;
+        }
+
+        section,form {
+            height: 100%;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            font-size: 80%;
+        }
+    </style>
+    <script type="text/javascript">
+        function main() {
+            const saveBtn = document.getElementById('save-btn');
+            const form = document.getElementById('form');
+            saveBtn.addEventListener('click', () => {
+                form.submit();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', main);
+    </script>
+</head>
+
+<body>
+    <main>
+        <nav class="top-nav">
+            <h1><a href=".">&#9001; Editing {{ recipe.name }}</a></h1>
+            <a id="save-btn" class="control-btn" href="#">Save</a>
+        </nav>
+        <section>
+            <form id="form" method="POST">
+                <textarea name="recipe_yaml">{{recipe_yaml}}</textarea>
+            </form>
+        </section>
+    </main>
+</body>
+
+</html>

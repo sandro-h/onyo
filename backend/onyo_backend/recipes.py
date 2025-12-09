@@ -126,6 +126,18 @@ def list_recipe_files(recipe_dir):
     return recipe_dir.glob("*.yaml")
 
 
+def load_recipe_yaml(recipe_id):
+    path = RECIPE_DIR / f"{recipe_id}.yaml"
+    with open(path, "r", encoding="utf8") as file:
+        return file.read()
+
+
+def save_recipe_yaml(recipe_id, yaml):
+    path = RECIPE_DIR / f"{recipe_id}.yaml"
+    with open(path, "w", encoding="utf8") as file:
+        file.write(yaml)
+
+
 @lru_cache(maxsize=1)
 def load_recipes(
     recipe_dir,
