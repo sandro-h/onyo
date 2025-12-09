@@ -10,6 +10,7 @@ location /onyo {
     proxy_pass http://127.0.0.1:13012/onyo;
     auth_basic "Onyo";
     auth_basic_user_file .onyo_htpasswd;
+    proxy_set_header X-User $remote_user;
 }
 ```
 

@@ -64,7 +64,11 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def render_categories(self):
         categories, _ = list_recipes()
-        self.reply_template("index.html", categories=categories)
+        self.reply_template(
+            "index.html",
+            categories=categories,
+            user=self.get_authenticated_user(),
+        )
 
     def render_recipe_list(self, category_name):
         categories, _ = list_recipes()
@@ -109,6 +113,9 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         )
 
     def edit_recipe(self, recipe_id):
+        if not self.check_authenticated():
+            return
+
         if not self.lookup_recipe(recipe_id):
             return
 
@@ -144,6 +151,9 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.reply_template("ideas.html", ideas=ideas)
 
     def add_idea(self):
+        if not self.check_authenticated():
+            return
+
         body_data = self.get_body_text()
         # poor man's form parsing, since it's only one value
         text = unquote_plus(body_data[len("text=") :])
@@ -154,6 +164,9 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.redirect("/onyo/ideas")
 
     def delete_idea(self, idea_guid):
+        if not self.check_authenticated():
+            return
+
         body_data = self.get_body_text()
         if body_data != "action=delete":
             self._reply(400, "Invalid action")
@@ -167,6 +180,16 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
     def get_body_text(self):
         content_length = int(self.headers["Content-Length"])
         return bytes.decode(self.rfile.read(content_length))
+
+    def check_authenticated(self):
+        if not self.get_authenticated_user():
+            self._reply(401, "Not authenticated")
+            return False
+        return True
+
+    def get_authenticated_user(self):
+        # Relies on nginx config to forward user in this header:
+        return self.headers.get("X-User")
 
     def reply_template(self, template_file, **kw_args):
         template = self.template_env.get_template(template_file)

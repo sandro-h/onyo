@@ -5,6 +5,14 @@
     <title>Onyo</title>
     {% include "_preamble.html" %}
     <style type="text/css">
+        .title-onyo {
+            width: 20px;
+            height: 20px;
+        }
+        .user {
+            font-style: italic;
+            color: lightgray;
+        }
         section {
             text-align: center;
         }
@@ -25,7 +33,15 @@
 
 <body>
     <main>
-        <h1>Onyo</h1>
+        <nav>
+            <h1>
+                <img class="title-onyo" src="/onyo/static/logo192.png">
+                Onyo
+            </h1>
+            <span class="user">
+                {{ user or 'anonymous' }}
+            </span>
+        </nav>
         <section>
             <ul>
                 {% for cat in categories.values()|sort(attribute='name') %}
