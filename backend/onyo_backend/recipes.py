@@ -197,12 +197,12 @@ def resolve_links(recipes: dict[str, Recipe]):
                 continue
 
             linked_recipe = recipes.get(i.linked_recipe_id)
-            if not linked_recipe:
+            if linked_recipe:
+                i.text = linked_recipe.name
+            else:
                 print(
                     f"WARN: Ingredient link {i.linked_recipe_id} in {r.id} is not valid"
                 )
-
-            i.text = linked_recipe.name
 
 
 def load_recipe_from_file(path) -> Recipe:
