@@ -7,5 +7,7 @@ version: 2
 updates:
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/backend" # Location of package manifests
+    exclude-paths:
+      - "requirements.in"    
     schedule:
       interval: "weekly"
