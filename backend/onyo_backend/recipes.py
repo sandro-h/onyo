@@ -60,6 +60,9 @@ class Timer:
 class Task:
     parts: list = field(default_factory=list)
 
+    def ingredient_indices(self):
+        return [p.ingr_index_in_step for p in self.parts if p.type == "ingredient"]
+
 
 @dataclass_json
 @dataclass
@@ -83,7 +86,7 @@ class TextPart:
 class IngredientPart:
     name: str
     text: str
-    color_index: int = 0
+    ingr_index_in_step: int = 0
     type: str = "ingredient"
 
 
@@ -307,7 +310,7 @@ def handle_steps(step_lines, recipe: Recipe):
         if ingr_match:
             ingr_part = handle_task_ingredient(ingr_match)
             ingr_index_in_step = add_ingredient_to_step(ingr_part, step)
-            ingr_part.color_index = ingr_index_in_step % NUM_COLORS
+            ingr_part.ingr_index_in_step = ingr_index_in_step
             return ingr_part
 
         timer_match = TIMER_PATTERN.match(match)
@@ -350,6 +353,7 @@ def handle_steps(step_lines, recipe: Recipe):
                 name=ingr_part.name,
                 text=ingr_part.text,
             )
+
         step.ingredients.append(ingr)
 
         return len(step.ingredients) - 1
