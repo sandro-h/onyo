@@ -8,6 +8,8 @@ from pathlib import Path
 
 RECIPE_DIR = Path(__file__).parent.parent.parent / "recipes"
 NUM_COLORS = 8
+INGR_PATTERN = re.compile(r"\$([^$]+)\$")
+INGR_LINK_PATTERN = re.compile(r"~([^~]+)~")
 
 
 class Mise(Enum):
@@ -151,8 +153,8 @@ def handle_ingredients(ingredient_lines, recipe: Recipe):
         elif ingr_line != "(":
             ingr = Ingredient(mise=Mise.START if last_line == "(" else Mise.NONE)
             recipe.ingredients.append(ingr)
-            ingr.text = re.sub(r"@([^@]+)@", handle_ingr_name, ingr_line)
-            ingr.text = re.sub(r"~([^~]+)~", handle_ingr_link, ingr.text)
+            ingr.text = re.sub(INGR_PATTERN, handle_ingr_name, ingr_line)
+            ingr.text = re.sub(INGR_LINK_PATTERN, handle_ingr_link, ingr.text)
             if ingr.name:
                 recipe.ingredient_map[ingr.name] = ingr
 
@@ -202,7 +204,7 @@ def handle_steps(step_lines, recipe: Recipe):
         ingr_indexes = {}
         for task_line in step_line["tasks"]:
             clean_task = re.sub(
-                r"@([^@]+)@",
+                INGR_PATTERN,
                 lambda m: handle_task_ingr_name(m, ingr_indexes),
                 task_line,
             )
