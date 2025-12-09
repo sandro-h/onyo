@@ -155,7 +155,7 @@ def save_recipe_yaml(recipe_id, recipe_yaml):
 def load_recipes(
     recipe_dir,
     lmod,  # pylint: disable=unused-argument
-) -> dict[str, Category]:
+) -> tuple[dict[str, Category], list[Recipe]]:
     print("Reloading recipes")
     categories = {}
     recipes = {}

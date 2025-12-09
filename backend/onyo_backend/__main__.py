@@ -76,10 +76,11 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         self._reply(404, "Not found")
 
     def render_categories(self):
-        categories, _ = list_recipes()
+        categories, recipes = list_recipes()
         self.reply_template(
             "index.html",
             categories=categories,
+            recipes=recipes.values(),
             user=self.get_authenticated_user(),
         )
 

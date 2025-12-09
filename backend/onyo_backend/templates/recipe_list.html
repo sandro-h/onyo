@@ -31,6 +31,12 @@
             color: lightgray;
             font-size: 75%;
         }
+
+        #search {
+            width: 80%;
+            margin-top: 1em;
+            margin-left: 1em;
+        }
     </style>
     <script type="text/javascript">
         function main() {
@@ -52,6 +58,8 @@
                 meals.forEach(show);
                 hide(allBtn);
             }
+
+            initSearch();
         }
 
         function randomIndex(count, last) {
@@ -63,12 +71,28 @@
             }
         }
 
-        function show(e) {
-            e.classList.remove('hidden');
+        function initSearch() {
+            const search = document.getElementById('search');
+            search.addEventListener('input', () => {
+                const term = search.value.toLowerCase();
+                document.querySelectorAll('.recipe').forEach(e => {
+                    const matches = e.dataset.searchname.toLowerCase().includes(term);
+                    if (matches) {
+                        show(e);
+                    }
+                    else {
+                        hide(e);
+                    }
+                });
+            });
         }
 
         function hide(e) {
             e.classList.add('hidden');
+        }
+
+        function show(e) {
+            e.classList.remove('hidden');
         }
 
         document.addEventListener('DOMContentLoaded', main);
@@ -83,10 +107,11 @@
             <a id="random-btn" class="control-btn" href="#">Random</a>
         </nav>
         <section>
+            <input id="search" type="search" placeholder="Search recipe"/>
             <ul>
                 {% for recipe in category.recipes %}
                 <li>
-                    <a class="link-btn" href="/onyo/recipes/{{recipe.id}}">
+                    <a class="link-btn recipe" href="/onyo/recipes/{{recipe.id}}" data-searchname="{{ recipe.name }}">
                         <span class="icon-l">{{recipe.icon}}</span>
                         <span>{{recipe.name}}</span>
                         <span class="icon-r">{{recipe.icon}}</span>

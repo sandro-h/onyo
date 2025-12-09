@@ -28,7 +28,59 @@
         .idea-btn {
             background-color: #9a0dfa !important;
         }
+
+        #search {
+            width: 80%;
+            margin-top: 1em;
+            margin-left: 1em;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
+    <script type="text/javascript">
+        function main() {
+            initSearch();
+        }
+
+        function initSearch() {
+            const search = document.getElementById('search');
+            const categories = document.getElementById('categories');
+            const results = document.getElementById('results');
+            search.addEventListener('input', () => {
+                const term = search.value.toLowerCase();
+                if (!term) {
+                    show(categories);
+                    hide(results);
+                }
+                else {
+                    show(results);
+                    hide(categories);
+                }
+
+                document.querySelectorAll('.recipe').forEach(e => {
+                    const matches = e.dataset.searchname.toLowerCase().includes(term);
+                    if (matches) {
+                        show(e);
+                    }
+                    else {
+                        hide(e);
+                    }
+                });
+            });
+        }
+
+        function hide(e) {
+            e.classList.add('hidden');
+        }
+
+        function show(e) {
+            e.classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', main);
+    </script>
 </head>
 
 <body>
@@ -43,11 +95,23 @@
             </span>
         </nav>
         <section>
-            <ul>
+            <input id="search" type="search" autocomplete="off" placeholder="Search recipe"/>
+            <ul id="categories">
                 {% for cat in categories.values()|sort(attribute='name') %}
                 <li><a class="link-btn" href="/onyo/categories/{{cat.name}}">{{cat.name}}</a></li>
                 {% endfor %}
                 <li><a class="link-btn idea-btn" href="/onyo/ideas">💡 Ideas</a></li>
+            </ul>
+            <ul id="results" class="hidden">
+                {% for recipe in recipes %}
+                <li>
+                    <a class="link-btn recipe" href="/onyo/recipes/{{recipe.id}}" data-searchname="{{ recipe.name }}">
+                        <span class="icon-l">{{recipe.icon}}</span>
+                        <span>{{recipe.name}}</span>
+                        <span class="icon-r">{{recipe.icon}}</span>
+                    </a>
+                </li>
+                {% endfor %}
             </ul>
         </section>
     </main>
