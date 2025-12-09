@@ -5,10 +5,10 @@
     <title>Onyo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <link rel="icon" type="image/x-icon" href="/static/logo192.png">
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="manifest" href="/static/manifest.json">
-    <script src="/static/index.js"></script>
+    <link rel="icon" type="image/x-icon" href="/onyo/static/logo192.png">
+    <link rel="stylesheet" href="/onyo/static/style.css">
+    <link rel="manifest" href="/onyo/static/manifest.json">
+    <script src="/onyo/static/index.js"></script>
     <style type="text/css">
         section {
             text-align: center;
@@ -37,13 +37,10 @@
         <section>
             <ul>
                 {% for cat in categories.values()|sort(attribute='name') %}
-                <li><a class="link-btn" href="/categories/{{cat.name}}">{{cat.name}}</a></li>
+                <li><a class="link-btn" href="/onyo/categories/{{cat.name}}">{{cat.name}}</a></li>
                 {% endfor %}
             </ul>
         </section>
-        <footer>
-            <a href="static/certificate.pem">Certificate</a>
-        </footer>
     </main>
 </body>
 

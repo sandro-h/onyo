@@ -5,8 +5,8 @@
     <title>{{ recipe.name }} - Onyo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <link rel="icon" type="image/x-icon" href="/static/logo192.png">
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" type="image/x-icon" href="/onyo/static/logo192.png">
+    <link rel="stylesheet" href="/onyo/static/style.css">
     <style type="text/css">
         .tab {
             display: none;
@@ -233,7 +233,7 @@
                     {% endif %}
                     <li>
                         {% if ingr.linked_recipe_id %}
-                            <a href="/recipes/{{ ingr.linked_recipe_id }}">{{ ingr.text }}</a>
+                            <a href="/onyo/recipes/{{ ingr.linked_recipe_id }}">{{ ingr.text }}</a>
                         {%else %}
                             {{ ingr.text }}
                         {% endif %}

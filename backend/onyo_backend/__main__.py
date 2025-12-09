@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 import re
 import http.server
@@ -7,23 +6,13 @@ from onyo_backend.shopping_list import assemble_shopping_list, get_shopping_link
 from .recipes import NUM_COLORS, Mise
 from onyo_backend.recipes import list_recipes
 from jinja2 import Environment, PackageLoader, select_autoescape
-import ssl
 
 PORT = 13012
 
 
 def main():
     with http.server.ThreadingHTTPServer(("", PORT), SimpleRequestHandler) as httpd:
-        ssl_ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        ssl_ctx.check_hostname = False
-        ssl_ctx.load_cert_chain(
-            certfile="certificate.pem",
-            keyfile="key.pem",
-            password=os.getenv("PASSPHRASE"),
-        )
-        httpd.socket = ssl_ctx.wrap_socket(httpd.socket, server_side=True)
-
-        print(f"Listening on port https://localhost:{PORT}")
+        print(f"Listening on port http://localhost:{PORT}")
         httpd.serve_forever()
 
 
@@ -34,18 +23,18 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         )
 
         self.routes = {
-            r"/": self.render_categories,
-            r"/categories/([^/]+)": self.render_recipe_list,
-            r"/recipes/([^/]+)": self.render_recipe,
+            r"/onyo": self.render_categories,
+            r"/onyo/categories/([^/]+)": self.render_recipe_list,
+            r"/onyo/recipes/([^/]+)": self.render_recipe,
         }
 
         super().__init__(*args, directory=Path(__file__).parent, **kwargs)
 
     def do_GET(self):
-        if self.path.startswith("/static"):
+        if self.path.startswith("/onyo/static"):
             return super().do_GET()
 
-        if self.path == "/favicon.ico":
+        if self.path == "/onyo/favicon.ico":
             return self._reply(404, "Not found")
 
         for pattern, route in self.routes.items():
@@ -81,7 +70,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
             return
 
         shopping_list = assemble_shopping_list(recipe, shopping_links)
-        back_link = f"/categories/{list(recipe.categories)[0]}"
+        back_link = f"/onyo/categories/{list(recipe.categories)[0]}"
 
         self.reply_template(
             "recipe.html",

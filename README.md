@@ -14,7 +14,9 @@ or
 .\start.ps1
 ```
 
-https://localhost:13012/ or https://ip:13012/
+http://localhost:13012/
+
+The app should be put behind nginx for SSL termination.
 
 ## Development
 
@@ -41,7 +43,6 @@ Start backend:
 
 ```shell
 cd backend
-$env:PASSPHRASE = Get-Content .passphrase
 .\venv\Scripts\Activate.ps1
 python -m onyo_backend
 ```
@@ -51,14 +52,6 @@ With hot reloading (buggy):
 ```shell
 python -m jurigged -m onyo_backend
 ```
-
-Renew cert:
-
-```shell
-openssl req -newkey rsa:2048 -keyout key.pem -x509 -days 3650 -out certificate.pem -subj "/C=CH/CN=192.168.1.28" -addext "subjectAltName = DNS:localhost,IP:192.168.1.28"
-```
-
-**Note:** Git bash tries to treat subj as a path. Use openssl directly `C:\Program Files\Git\usr\bin\openssl.exe`.
 
 Tests and linting:
 
