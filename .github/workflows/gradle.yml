@@ -26,4 +26,4 @@ jobs:
         run: which sh
 
       - name: bla
-        run: sh --version
+        run: ls -l /usr/bin/sh
