@@ -8,6 +8,7 @@ from dataclasses_json import dataclass_json, config
 import yaml
 from functools import lru_cache, partial
 from pathlib import Path
+import rich
 
 DATA_DIR = Path(__file__).parent.parent.parent / "data"
 RECIPE_DIR = DATA_DIR / "recipes"
@@ -111,6 +112,13 @@ class Note:
 
 @dataclass_json
 @dataclass
+class Warning:
+    msg: str
+    extra_context: str = ""
+
+
+@dataclass_json
+@dataclass
 class Recipe:
     id: str
     name: str
@@ -120,6 +128,7 @@ class Recipe:
     ingredient_map: dict[str, Ingredient] = field(default_factory=dict)
     steps: list[Step] = field(default_factory=list)
     notes: list[Note] = field(default_factory=list)
+    warnings: list[Warning] = field(default_factory=list)
 
     def all_ingredients(self) -> Generator[Ingredient, None, None]:
         for g in self.ingredient_groups:
@@ -133,6 +142,9 @@ class Recipe:
 
         search = {sanitize(ingr.text) for ingr in self.all_ingredients()}
         return search
+
+    def add_warning(self, msg: str, extra_context: str = ""):
+        self.warnings.append(Warning(msg, extra_context))
 
 
 @dataclass_json
@@ -176,13 +188,22 @@ def load_recipes(
     lmod,  # pylint: disable=unused-argument
 ) -> tuple[dict[str, Category], dict[str, Recipe]]:
     print("Reloading recipes")
+    errors = []
+    categories, recipes = load_recipes_uncached(recipe_dir, errors)
+    print_errors(errors)
+    print_warnings(recipes.values())
+    return categories, recipes
+
+
+def load_recipes_uncached(recipe_dir, errors: list[str]):
     categories = {}
     recipes = {}
     for r in list_recipe_files(recipe_dir):
         try:
             recipe = load_recipe_from_file(r)
         except Exception as e:  # pylint: disable=broad-exception-caught
-            print(f"Error loading {r}: {e}" + "\n" + traceback.format_exc())
+            err = f"Error loading {r}: {e}" + "\n" + traceback.format_exc()
+            errors.append(err)
             continue
 
         recipes[recipe.id] = recipe
@@ -199,6 +220,21 @@ def load_recipes(
     return categories, recipes
 
 
+def print_errors(errors: list[str]):
+    for e in errors:
+        rich.print(f"[red]ERROR[/red]: {e}")
+
+
+def print_warnings(recipes: list[Recipe]):
+    for r in recipes:
+        path = RECIPE_DIR / f"{r.id}.yaml"
+        for w in r.warnings:
+            ctx = f"[cyan]{path}[/cyan]"
+            if w.extra_context:
+                ctx += f", {w.extra_context}"
+            rich.print(f"[orange3]WARNING[/orange3]: {w.msg} ({ctx})")
+
+
 def resolve_links(recipes: dict[str, Recipe]):
     for r in recipes.values():
         for i in r.all_ingredients():
@@ -209,9 +245,7 @@ def resolve_links(recipes: dict[str, Recipe]):
             if linked_recipe:
                 i.text = linked_recipe.name
             else:
-                print(
-                    f"WARN: Ingredient link {i.linked_recipe_id} in {r.id} is not valid"
-                )
+                r.add_warning(f"Ingredient link {i.linked_recipe_id} is not valid")
 
 
 def load_recipe_from_file(path) -> Recipe:
@@ -241,6 +275,7 @@ def load_recipe(data, recipe_id) -> Recipe:
     handle_ingredients(data["ingredients"], recipe)
     handle_steps(data.get("steps", []), recipe)
     handle_notes(data.get("notes", []), recipe)
+    validate(recipe)
 
     return recipe
 
@@ -337,8 +372,9 @@ def handle_steps(step_lines, recipe: Recipe):
 
         ingr = recipe.ingredient_map.get(ingr_part.name)
         if ingr is None:
-            print(
-                f"WARNING: Task ingredient '{ingr_part.name}' is not part of recipe ({recipe.name} step {len(recipe.steps)})"
+            recipe.add_warning(
+                f"Task ingredient '{ingr_part.name}' is not part of recipe",
+                extra_context=f"step {len(recipe.steps)}, task {len(step.tasks) + 1}",
             )
             ingr = Ingredient(
                 name=ingr_part.name,
@@ -404,6 +440,39 @@ def handle_formatted_text_part(match):
             style="bold",
         )
     return None
+
+
+def validate(recipe: Recipe):
+    # Note some validations/warnings are handled during parsing already.
+    validate_mise_grouping_in_steps(recipe)
+
+
+def validate_mise_grouping_in_steps(recipe: Recipe):
+    HINT = "Hint: maybe you are referencing the wrong numbered ingredient (e.g. $cream:1$ instead of $cream:2$)"
+    for i, step in enumerate(recipe.steps):
+        in_mise_group = False
+        for ingr in step.ingredients:
+            extra_ctx = f"step {i + 1}, ingredient {ingr.name}"
+            if ingr.mise == Mise.START:
+                if in_mise_group:
+                    recipe.add_warning(
+                        f"Nested mise group. {HINT}",
+                        extra_context=extra_ctx,
+                    )
+                in_mise_group = True
+            if ingr.mise == Mise.END:
+                if not in_mise_group:
+                    recipe.add_warning(
+                        f"Ending unstarted mise group. {HINT}",
+                        extra_context=extra_ctx,
+                    )
+                in_mise_group = False
+
+        if in_mise_group:
+            recipe.add_warning(
+                f"Mise group not ended. {HINT}",
+                extra_context=f"step {i + 1}",
+            )
 
 
 def clean_ingr_name(ingr_name):

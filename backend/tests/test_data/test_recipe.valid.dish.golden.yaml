@@ -28,8 +28,8 @@ input:
     - 'Build enchiladas: spread some sauce on tortilla, add veggie/bean/chicken mix,
       add grated cheese'
     - Fold tortilla and place into oiled backing dish
-    - Spread remaining sauce on top of tortillas, add remaining cheddar cheese on
-      top
+    - Spread remaining sauce on top of tortillas, add remaining cheddar cheese 
+      on top
   - tasks:
     - Bake enchiladas in oven for !20 minutes!
   notes:
@@ -202,8 +202,8 @@ output:
         style: ''
         type: text
     - parts:
-      - text: Spread remaining sauce on top of tortillas, add remaining cheddar cheese
-          on top
+      - text: Spread remaining sauce on top of tortillas, add remaining cheddar 
+          cheese on top
         style: ''
         type: text
     ingredients: []
@@ -231,3 +231,4 @@ output:
     - text: bold formatting
       style: bold
       type: text
+  warnings: []

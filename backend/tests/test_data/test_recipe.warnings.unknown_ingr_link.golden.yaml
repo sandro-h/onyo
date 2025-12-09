@@ -1,0 +1,14 @@
+input:
+  name: Älplermagronen
+  icon: 🍝
+  category: [Meal, Sides]
+  ingredients:
+  - 100 $cream$
+  - 150g ~bacon~
+  steps:
+  - tasks:
+    - Fry until golden brown
+output:
+  warnings:
+  - msg: Ingredient link bacon is not valid
+    extra_context: ''

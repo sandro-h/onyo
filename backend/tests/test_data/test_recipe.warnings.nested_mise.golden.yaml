@@ -1,0 +1,26 @@
+input:
+  name: Älplermagronen
+  icon: 🍝
+  category: [Meal, Sides]
+  ingredients:
+  - (
+  - 100 $cream:1$
+  - 150g diced $bacon$
+  - )
+  - (
+  - 5dl $vegetable stock$
+  - 2dl $cream:2$
+  - )
+  steps:
+  - tasks:
+    - Fry $cream:1$, $bacon$ until golden brown
+  - tasks:
+    - Bring $vegetable stock$ and $cream:1$ to a boil
+output:
+  warnings:
+  - msg: 'Nested mise group. Hint: maybe you are referencing the wrong numbered ingredient
+      (e.g. $cream:1$ instead of $cream:2$)'
+    extra_context: step 2, ingredient cream:1
+  - msg: 'Mise group not ended. Hint: maybe you are referencing the wrong numbered
+      ingredient (e.g. $cream:1$ instead of $cream:2$)'
+    extra_context: step 2

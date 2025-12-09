@@ -1,0 +1,16 @@
+input:
+  name: Älplermagronen
+  icon: 🍝
+  category: [Meal, Sides]
+  ingredients:
+  - 100 $cream$
+  - 150g diced $bacon$
+  steps:
+  - tasks:
+    - Fry $cream$, $bacon$ until golden brown
+  - tasks:
+    - Bring $vegetable stock$
+output:
+  warnings:
+  - msg: Task ingredient 'vegetable stock' is not part of recipe
+    extra_context: step 2, task 1

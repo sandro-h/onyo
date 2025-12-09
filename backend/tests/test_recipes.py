@@ -6,13 +6,21 @@ from onyo_backend.recipes import (
     load_recipe,
     load_recipe_from_file,
     normalize_for_recipe_id,
+    resolve_links,
 )
 
 
-@pytest.mark.golden_test("test_data/test_recipe*.golden.yaml")
-def test_load_recipe(golden):
+@pytest.mark.golden_test("test_data/test_recipe.valid.*.golden.yaml")
+def test_load_recipe_valid(golden):
     recipe = load_recipe(golden["input"], "testrecipe")
     assert recipe.to_dict() == golden.out["output"]
+
+
+@pytest.mark.golden_test("test_data/test_recipe.warnings.*.golden.yaml")
+def test_load_recipe_warnings(golden):
+    recipe = load_recipe(golden["input"], "testrecipe")
+    resolve_links({recipe.id: recipe})
+    assert {"warnings": [w.to_dict() for w in recipe.warnings]} == golden.out["output"]
 
 
 @pytest.mark.parametrize(

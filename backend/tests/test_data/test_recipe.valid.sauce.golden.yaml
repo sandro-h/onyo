@@ -20,20 +20,20 @@ input:
   - tasks:
     - Mix $chili powder$, $cumin$, $garlic powder$ ,$oregano$, $salt$
   - tasks:
-    - Warm $oil$ until hot enough that a light sprinkle of the flour/spice mixture
-      sizzles on contact
-    - Pour $flour$ and spices. While whisking constantly, cook until fragrant and
-      slightly deepened in color, about 1 minute.
-    - Whisk the $tomato paste$ into the mixture, then slowly pour in the $broth$ while
-      whisking constantly to remove any lumps.
+    - Warm $oil$ until hot enough that a light sprinkle of the flour/spice 
+      mixture sizzles on contact
+    - Pour $flour$ and spices. While whisking constantly, cook until fragrant 
+      and slightly deepened in color, about 1 minute.
+    - Whisk the $tomato paste$ into the mixture, then slowly pour in the $broth$
+      while whisking constantly to remove any lumps.
   - tasks:
-    - Raise heat to medium-high and bring the mixture to a simmer, then reduce heat
-      as necessary to maintain a gentle simmer. Cook, whisking often, for about 5
-      to 7 minutes, until the sauce has thickened a bit and a spoon encounters some
-      resistance as you stir it.
+    - Raise heat to medium-high and bring the mixture to a simmer, then reduce 
+      heat as necessary to maintain a gentle simmer. Cook, whisking often, for 
+      about 5 to 7 minutes, until the sauce has thickened a bit and a spoon 
+      encounters some resistance as you stir it.
   - tasks:
-    - Remove from heat, then whisk in the $vinegar$ and season to taste with a generous
-      amount of freshly ground black pepper.
+    - Remove from heat, then whisk in the $vinegar$ and season to taste with a 
+      generous amount of freshly ground black pepper.
     - Dummy line with separate $salt:2$ ingredient
 output:
   id: testrecipe
@@ -270,10 +270,10 @@ output:
   - title: ''
     tasks:
     - parts:
-      - text: Raise heat to medium-high and bring the mixture to a simmer, then reduce
-          heat as necessary to maintain a gentle simmer. Cook, whisking often, for
-          about 5 to 7 minutes, until the sauce has thickened a bit and a spoon encounters
-          some resistance as you stir it.
+      - text: Raise heat to medium-high and bring the mixture to a simmer, then 
+          reduce heat as necessary to maintain a gentle simmer. Cook, whisking 
+          often, for about 5 to 7 minutes, until the sauce has thickened a bit 
+          and a spoon encounters some resistance as you stir it.
         style: ''
         type: text
     ingredients: []
@@ -314,3 +314,4 @@ output:
       linked_recipe_id:
     timers: []
   notes: []
+  warnings: []

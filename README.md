@@ -16,7 +16,9 @@ location /onyo {
 
 ## Writing recipes
 
-Recipes are stored in the `data/recipes` folder as yaml files. Recommendation: put a dedicated `onyo-data` git repo into `data/` to maintain these recipes.
+Recipes are stored in the `data/recipes` folder as yaml files.
+
+**Recommendation**: put a dedicated `onyo-data` git repo into `data/` to maintain these recipes. Then use `push_data.ps1` to commit and push changes.
 
 ### Special syntaxes
 
@@ -37,7 +39,15 @@ Recipes are stored in the `data/recipes` folder as yaml files. Recommendation: p
 * `!10 minutes!` - timer link in task description
 * `**bold text**`
 
-### Update shopping links
+### CLI
+
+#### Validate recipes
+
+```shell
+.\cli.ps1 validate
+```
+
+#### Update shopping links
 
 ```shell
 .\cli.ps1 update-shopping-links
