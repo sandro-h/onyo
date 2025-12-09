@@ -1,6 +1,6 @@
 # Onyo
 
-http://localhost:13012/
+http://localhost:13012/onyo
 
 The app should be put behind nginx for SSL termination. Additionally, nginx can be configured for basic auth so
 that editing operations are protected. Example nginx config:
