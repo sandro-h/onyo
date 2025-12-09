@@ -8,7 +8,14 @@ import yaml
 
 from .ideas import Idea, add_idea, delete_idea, list_ideas_for_html
 from .shopping_list import assemble_shopping_list, get_shopping_ingredients
-from .recipes import NUM_COLORS, Mise, load_recipe, load_recipe_yaml, save_recipe_yaml
+from .recipes import (
+    NUM_COLORS,
+    Mise,
+    create_empty_recipe,
+    load_recipe,
+    load_recipe_yaml,
+    save_recipe_yaml,
+)
 from onyo_backend.recipes import list_recipes
 from jinja2 import Environment, PackageLoader, select_autoescape
 
@@ -51,6 +58,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
             r"/onyo/ideas": self.add_idea,
             r"/onyo/ideas/([^/]+)": self.delete_idea,
             r"/onyo/recipes/([^/]+)/edit": self.edit_recipe,
+            r"/onyo/recipes/create": self.create_recipe,
         }
 
         super().__init__(*args, directory=Path(__file__).parent, **kwargs)
@@ -149,6 +157,19 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         save_recipe_yaml(recipe_id, recipe_yaml)
 
         # redirect to avoid repost on refresh
+        self.redirect(recipe_link(recipe_id))
+
+    def create_recipe(self):
+        if not self.check_role(RECIPE_EDITOR):
+            return
+
+        body_data = self.get_body_text()
+        # poor man's form parsing, since it's only one value
+        recipe_name = unquote_plus(body_data[len("name=") :]).replace("\r", "")
+
+        recipe_id = create_empty_recipe(recipe_name)
+
+        # redirect to newly created recipe
         self.redirect(recipe_link(recipe_id))
 
     def lookup_recipe(self, recipe_id):

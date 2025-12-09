@@ -1,3 +1,5 @@
+check: lint test
+
 .PHONY: lint
 lint:
 	flake8 backend/onyo_backend backend/cli backend/tests

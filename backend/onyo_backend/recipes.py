@@ -121,7 +121,7 @@ class Recipe:
     steps: list[Step] = field(default_factory=list)
     notes: list[Note] = field(default_factory=list)
 
-    def all_ingredients(self) -> Generator[Ingredient]:
+    def all_ingredients(self) -> Generator[Ingredient, None, None]:
         for g in self.ingredient_groups:
             yield from g.ingredients
 
@@ -441,3 +441,34 @@ def normalize_ingr_name_for_shopping(name: str):
     # Normalize aliases
     name = ALIASES.get(name, name)
     return name
+
+
+def normalize_for_recipe_id(name: str):
+    normalized = name.replace("'s", "s")
+    normalized = re.sub(r"([^a-zA-Z0-9])+", " ", normalized).title().replace(" ", "")
+    return normalized[0].lower() + normalized[1:]
+
+
+def create_empty_recipe(name: str) -> str:
+    recipe_id = normalize_for_recipe_id(name)
+    spaghetti_emoji = "\U0001f35d"
+    with open(RECIPE_DIR / f"{recipe_id}.yaml", "w", encoding="utf8") as file:
+        file.write(
+            f"""\
+---
+name: {name}
+icon: {spaghetti_emoji}
+category: [Meal]
+ingredients:
+- dummy ingredient
+steps:
+- title: dummy step
+  tasks:
+  - dummy task
+
+# notes:
+#  - dummy notes
+"""
+        )
+
+    return recipe_id

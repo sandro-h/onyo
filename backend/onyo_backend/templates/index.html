@@ -25,7 +25,7 @@
             list-style-type: none;
         }
 
-        .idea-btn {
+        .special-btn {
             background-color: #9a0dfa !important;
         }
 
@@ -42,6 +42,8 @@
     <script type="text/javascript">
         function main() {
             initSearch();
+            const createRecipeBtn = document.getElementById('create-recipe-btn');
+            createRecipeBtn.addEventListener('click', createRecipe);
         }
 
         function initSearch() {
@@ -86,6 +88,15 @@
             e.classList.remove('hidden');
         }
 
+        function createRecipe() {
+            const name = prompt("Recipe name");
+            if (!name) {
+                return;
+            }
+            document.getElementById('create-recipe-name').value = name;
+            document.getElementById('form').submit();
+        }
+
         document.addEventListener('DOMContentLoaded', main);
     </script>
 </head>
@@ -107,7 +118,13 @@
                 {% for cat in categories.values()|sort(attribute='name') %}
                 <li><a class="link-btn" href="/onyo/categories/{{cat.name}}">{{cat.name}}</a></li>
                 {% endfor %}
-                <li><a class="link-btn idea-btn" href="/onyo/ideas">💡 Ideas</a></li>
+                <li><a class="link-btn special-btn" href="/onyo/ideas">💡 Ideas</a></li>
+                {% if 'recipe_editor' in user.roles %}
+                <form id="form" method="POST" action="/onyo/recipes/create">
+                    <li><a id="create-recipe-btn" class="link-btn special-btn" href="#">New recipe</a></li>
+                    <input id="create-recipe-name" name="name" type="hidden" />
+                </form>
+                {% endif %}
             </ul>
             <ul id="results" class="hidden">
                 {% for recipe in recipes %}
