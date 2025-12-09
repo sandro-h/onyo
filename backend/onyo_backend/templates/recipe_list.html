@@ -74,9 +74,15 @@
         function initSearch() {
             const search = document.getElementById('search');
             search.addEventListener('input', () => {
-                const term = search.value.toLowerCase();
+                let term = search.value.toLowerCase();
+                const searchForIngredients = term.startsWith('i:');
+                if (searchForIngredients) {
+                    term = term.substring(2);
+                }
+
                 document.querySelectorAll('.recipe').forEach(e => {
-                    const matches = e.dataset.searchname.toLowerCase().includes(term);
+                    const haystack = searchForIngredients ? e.dataset.searchingredients : e.dataset.searchname
+                    const matches = haystack.toLowerCase().includes(term);
                     if (matches) {
                         show(e);
                     }
@@ -107,11 +113,11 @@
             <a id="random-btn" class="control-btn" href="#">Random</a>
         </nav>
         <section>
-            <input id="search" type="search" placeholder="Search recipe"/>
+            <input id="search" type="search" autocomplete="off" placeholder="Search recipe. i:[name] search by ingredient"/>
             <ul>
                 {% for recipe in category.recipes %}
                 <li>
-                    <a class="link-btn recipe" href="/onyo/recipes/{{recipe.id}}" data-searchname="{{ recipe.name }}">
+                    <a class="link-btn recipe" href="/onyo/recipes/{{recipe.id}}" data-searchname="{{ recipe.name }}" data-searchingredients="{{ recipe.searchable_ingredients() | join('|') }}">
                         <span class="icon-l">{{recipe.icon}}</span>
                         <span>{{recipe.name}}</span>
                         <span class="icon-r">{{recipe.icon}}</span>
