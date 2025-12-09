@@ -15,3 +15,7 @@ stop:
 	powershell -ExecutionPolicy Bypass -File .\stop.ps1
 
 restart: stop start
+
+.PHONY: dev
+dev:
+	powershell -ExecutionPolicy Bypass -File .\dev.ps1
