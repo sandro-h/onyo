@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum, auto
 import math
 import re
+import traceback
 from typing import Generator
 from dataclasses_json import dataclass_json, config
 import yaml
@@ -115,6 +116,15 @@ class Recipe:
         for g in self.ingredient_groups:
             yield from g.ingredients
 
+    def searchable_ingredients(self) -> set[str]:
+        def sanitize(text: str):
+            return re.sub(
+                r"([0-9./ ]+\s*(dl|ml|l|g|kg|tb?sp|cups?)\s*)|(^[0-9-+]+ )", "", text
+            ).lower()
+
+        search = {sanitize(ingr.text) for ingr in self.all_ingredients()}
+        return search
+
 
 @dataclass_json
 @dataclass
@@ -163,7 +173,7 @@ def load_recipes(
         try:
             recipe = load_recipe_from_file(r)
         except Exception as e:  # pylint: disable=broad-exception-caught
-            print(f"Error loading {r}: {e}")
+            print(f"Error loading {r}: {e}" + "\n" + traceback.format_exc())
             continue
 
         recipes[recipe.id] = recipe
