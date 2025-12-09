@@ -5,6 +5,12 @@ Start:
 Make sure you have a `backend/.passphrase` file for the `key.pem`.
 
 ```shell
+make start
+```
+
+or
+
+```shell
 .\start.ps1
 ```
 
@@ -50,4 +56,11 @@ Renew cert:
 
 ```shell
 openssl req -newkey rsa:2048 -keyout key.pem -x509 -days 3650 -out certificate.pem -subj "/C=CH/CN=192.168.1.28" -addext "subjectAltName = DNS:localhost"
+```
+
+Tests and linting:
+
+```shell
+make lint
+make test
 ```

@@ -21,7 +21,7 @@ def main():
         )
         httpd.socket = ssl_ctx.wrap_socket(httpd.socket, server_side=True)
 
-        print(f"Listening on port http://localhost:{PORT}")
+        print(f"Listening on port https://localhost:{PORT}")
         httpd.serve_forever()
 
 
