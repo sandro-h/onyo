@@ -73,12 +73,15 @@ def list_recipe_files(recipe_dir):
 def load_recipes(recipe_dir, lmod) -> dict[str, Category]:
     print("Reloading recipes")
     categories = {}
+    recipes = {}
     for r in list_recipe_files(recipe_dir):
         try:
             recipe = load_recipe(r)
         except Exception as e:
             print(f"Error loading {r}: {e}")
             continue
+
+        recipes[recipe.id] = recipe
 
         for cat in recipe.categories:
             cat_id = cat.lower()
@@ -87,7 +90,7 @@ def load_recipes(recipe_dir, lmod) -> dict[str, Category]:
 
             categories[cat_id].recipes.append(recipe)
 
-    return categories
+    return categories, recipes
 
 
 def load_recipe(path) -> Recipe:

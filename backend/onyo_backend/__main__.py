@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import re
 import http.server
+from urllib.parse import urlparse
 from .recipes import NUM_COLORS, Mise
 from onyo_backend.recipes import list_recipes
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -33,8 +34,8 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         self.routes = {
             r"/": self.render_categories,
-            r"/([^/]+)": self.render_recipe_list,
-            r"/([^/]+)/([^/]+)": self.render_recipe,
+            r"/categories/([^/]+)": self.render_recipe_list,
+            r"/recipes/([^/]+)": self.render_recipe,
         }
 
         super().__init__(*args, directory=Path(__file__).parent, **kwargs)
@@ -57,11 +58,11 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         self._reply(404, "Not found")
 
     def render_categories(self):
-        categories = list_recipes()
+        categories, _ = list_recipes()
         self.reply_template("index.html", categories=categories)
 
     def render_recipe_list(self, category_name):
-        categories = list_recipes()
+        categories, _ = list_recipes()
         category = categories.get(category_name.lower())
         if not category:
             self._reply(404, f"No category {category_name}")
@@ -69,24 +70,25 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         self.reply_template("recipe_list.html", category=category)
 
-    def render_recipe(self, category_name, recipe_id):
-        categories = list_recipes()
-        category = categories.get(category_name.lower())
-        if not category:
-            self._reply(404, f"No category {category_name}")
-            return
+    def render_recipe(self, recipe_id):
+        _, recipes = list_recipes()
 
-        recipe = next((r for r in category.recipes if r.id == recipe_id.lower()), None)
+        recipe = recipes.get(recipe_id.lower())
         if not recipe:
             self._reply(404, f"No recipe {recipe_id}")
             return
+
+        if "Referer" in self.headers:
+            back_link = urlparse(self.headers["Referer"]).path
+        else:
+            back_link = f"/categories/{list(recipe.categories)[0]}"
 
         self.reply_template(
             "recipe.html",
             recipe=recipe,
             Mise=Mise,
             NUM_COLORS=NUM_COLORS,
-            back_link=f"/{category_name}",
+            back_link=back_link,
         )
 
     def reply_template(self, template_file, **kw_args):

@@ -35,6 +35,7 @@ Start backend:
 
 ```shell
 cd backend
+$env:PASSPHRASE = Get-Content .passphrase
 .\venv\Scripts\Activate.ps1
 python -m onyo_backend
 ```

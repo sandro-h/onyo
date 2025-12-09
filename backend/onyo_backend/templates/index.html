@@ -30,7 +30,7 @@
         <section>
             <ul>
                 {% for cat in categories.values()|sort(attribute='name') %}
-                <li><a class="link-btn" href="/{{cat.name}}">{{cat.name}}</a></li>
+                <li><a class="link-btn" href="/categories/{{cat.name}}">{{cat.name}}</a></li>
                 {% endfor %}
             </ul>
         </section>
