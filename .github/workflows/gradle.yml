@@ -9,19 +9,25 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        shell: bash
+
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
       - name: bla
         run: which sh
 
@@ -31,9 +37,4 @@ jobs:
       - name: bla
         env:
           USE_SONAR_JAVA: "true"
-        run: |
-          if [ "${USE_SONAR_JAVA:-}" == true ]; then
-            echo "ZULU_VERSION=zulu17.46.19-ca-jdk17.0.9"
-          else
-            echo "no"
-          fi
+        run: ./test.sh
