@@ -16,6 +16,8 @@ location /onyo {
 
 ## Writing recipes
 
+Recipes are stored in the `data/recipes` folder as yaml files. Recommendation: put a dedicated `onyo-data` git repo into `data/` to maintain these recipes.
+
 ### Special syntaxes
 
 #### In ingredient list

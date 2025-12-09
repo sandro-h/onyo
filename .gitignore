@@ -22,3 +22,6 @@ backend.pid
 .externalNativeBuild
 .cxx
 local.properties
+
+# data
+/data
