@@ -449,10 +449,10 @@ def normalize_for_recipe_id(name: str):
     return normalized[0].lower() + normalized[1:]
 
 
-def create_empty_recipe(name: str) -> str:
+def create_empty_recipe(name: str, recipe_dir=RECIPE_DIR) -> str:
     recipe_id = normalize_for_recipe_id(name)
     spaghetti_emoji = "\U0001f35d"
-    with open(RECIPE_DIR / f"{recipe_id}.yaml", "w", encoding="utf8") as file:
+    with open(recipe_dir / f"{recipe_id}.yaml", "w", encoding="utf8") as file:
         file.write(
             f"""\
 ---
