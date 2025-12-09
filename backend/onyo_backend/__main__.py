@@ -45,12 +45,11 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path.startswith("/onyo/static"):
-            return super().do_GET()
-
-        if self.path == "/onyo/favicon.ico":
-            return self._reply(404, "Not found")
-
-        self.execute_route(self.routes)
+            super().do_GET()
+        elif self.path == "/onyo/favicon.ico":
+            self._reply(404, "Not found")
+        else:
+            self.execute_route(self.routes)
 
     def do_POST(self):
         self.execute_route(self.post_routes)
@@ -59,10 +58,8 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         for pattern, route in routes.items():
             m = re.fullmatch(pattern, self.path)
             if m:
-                if m.groups():
-                    return route(*m.groups())
-
-                return route()
+                route(*m.groups())
+                return
 
         self._reply(404, "Not found")
 
@@ -86,7 +83,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         shopping_links = get_shopping_links()
         shopping_list = assemble_shopping_list(recipe, shopping_links)
-        link = self.recipe_link(recipe_id)
+        link = recipe_link(recipe_id)
         back_link = f"/onyo/categories/{list(recipe.categories)[0]}"
 
         self.reply_template(
@@ -113,8 +110,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         )
 
     def edit_recipe(self, recipe_id):
-        recipe = self.lookup_recipe(recipe_id)
-        if not recipe:
+        if not self.lookup_recipe(recipe_id):
             return
 
         body_data = self.get_body_text()
@@ -125,17 +121,14 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         try:
             data = yaml.safe_load(recipe_yaml)
             load_recipe(data, recipe_id.lower())
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             self._reply(400, f"Invalid recipe: {e}")
             return
 
         save_recipe_yaml(recipe_id, recipe_yaml)
 
         # redirect to avoid repost on refresh
-        self.redirect(self.recipe_link(recipe_id))
-
-    def recipe_link(self, recipe_id):
-        return f"/onyo/recipes/{recipe_id}"
+        self.redirect(recipe_link(recipe_id))
 
     def lookup_recipe(self, recipe_id):
         _, recipes = list_recipes()
@@ -198,6 +191,10 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header(k, v)
         self.additional_headers.clear()
         return super().end_headers()
+
+
+def recipe_link(recipe_id):
+    return f"/onyo/recipes/{recipe_id}"
 
 
 if __name__ == "__main__":

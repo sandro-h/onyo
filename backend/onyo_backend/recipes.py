@@ -132,10 +132,10 @@ def load_recipe_yaml(recipe_id):
         return file.read()
 
 
-def save_recipe_yaml(recipe_id, yaml):
+def save_recipe_yaml(recipe_id, recipe_yaml):
     path = RECIPE_DIR / f"{recipe_id}.yaml"
     with open(path, "w", encoding="utf8") as file:
-        file.write(yaml)
+        file.write(recipe_yaml)
 
 
 @lru_cache(maxsize=1)
