@@ -135,7 +135,7 @@ output:
         type: text
       - name: chicken
         text: chicken
-        color_index: 0
+        ingr_index_in_step: 0
         type: ingredient
       - text: ' with salt and peper, fry up.'
         style: ''
@@ -159,14 +159,14 @@ output:
         type: text
       - name: onion
         text: onion
-        color_index: 0
+        ingr_index_in_step: 0
         type: ingredient
       - text: 's, '
         style: ''
         type: text
       - name: bell pepper
         text: bell pepper
-        color_index: 1
+        ingr_index_in_step: 1
         type: ingredient
       - text: ' until soft'
         style: ''
@@ -177,7 +177,7 @@ output:
         type: text
       - name: black beans
         text: black beans
-        color_index: 2
+        ingr_index_in_step: 2
         type: ingredient
       - text: ', add to pan, cook for a minute.'
         style: ''
