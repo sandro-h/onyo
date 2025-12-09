@@ -40,7 +40,7 @@ class Step:
 class Recipe:
     id: str
     name: str
-    category: str
+    categories: set[str]
     icon: str
     ingredients: list[Ingredient] = field(default_factory=list)
     ingredient_map: dict[str, Ingredient] = field(default_factory=dict)
@@ -80,11 +80,12 @@ def load_recipes(recipe_dir, lmod) -> dict[str, Category]:
             print(f"Error loading {r}: {e}")
             continue
 
-        cat_id = recipe.category.lower()
-        if cat_id not in categories:
-            categories[cat_id] = Category(name=recipe.category)
+        for cat in recipe.categories:
+            cat_id = cat.lower()
+            if cat_id not in categories:
+                categories[cat_id] = Category(name=cat)
 
-        categories[cat_id].recipes.append(recipe)
+            categories[cat_id].recipes.append(recipe)
 
     return categories
 
@@ -93,10 +94,16 @@ def load_recipe(path) -> Recipe:
     with open(path, "r", encoding="utf8") as file:
         data = yaml.safe_load(file)
 
+    raw_categories = data["category"]
+    if isinstance(raw_categories, str):
+        categories = {raw_categories}
+    else:
+        categories = set(raw_categories)
+
     recipe = Recipe(
         id=path.name.replace(".yaml", "").lower(),
         name=data["name"],
-        category=data["category"],
+        categories=categories,
         icon=data.get("icon", ""),
     )
 

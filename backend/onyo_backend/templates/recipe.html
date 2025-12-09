@@ -207,7 +207,7 @@
 
 <body>
     <main>
-        <h1><a href="/{{recipe.category}}">&#9001; {{ recipe.name }}</a></h1>
+        <h1><a href="{{back_link}}">&#9001; {{ recipe.name }}</a></h1>
         <nav>
             <div class="switcher selected" data-tab="0">Ingr</div>
             {% for step in recipe.steps %}

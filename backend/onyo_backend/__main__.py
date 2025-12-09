@@ -74,6 +74,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
             recipe=recipe,
             Mise=Mise,
             NUM_COLORS=NUM_COLORS,
+            back_link=f"/{category_name}",
         )
 
     def reply_template(self, template_file, **kw_args):
