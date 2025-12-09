@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from pathlib import Path
 import re
 import http.server
@@ -12,6 +13,18 @@ from onyo_backend.recipes import list_recipes
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 PORT = 13012
+RECIPE_EDITOR = "recipe_editor"
+IDEA_EDITOR = "idea_editor"
+USER_ROLE_MAPPING = {
+    "admin": {IDEA_EDITOR, RECIPE_EDITOR},
+    "fam": {IDEA_EDITOR},
+}
+
+
+@dataclass
+class AuthenticatedUser:
+    name: str
+    roles: set[str]
 
 
 def main():
@@ -97,6 +110,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
             NUM_COLORS=NUM_COLORS,
             link=link,
             back_link=back_link,
+            user=self.get_authenticated_user(),
         )
 
     def render_edit_recipe(self, recipe_id):
@@ -113,7 +127,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         )
 
     def edit_recipe(self, recipe_id):
-        if not self.check_authenticated():
+        if not self.is_authorized(RECIPE_EDITOR):
             return
 
         if not self.lookup_recipe(recipe_id):
@@ -148,10 +162,14 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def render_ideas(self):
         ideas = list_ideas_for_html()
-        self.reply_template("ideas.html", ideas=ideas)
+        self.reply_template(
+            "ideas.html",
+            ideas=ideas,
+            user=self.get_authenticated_user(),
+        )
 
     def add_idea(self):
-        if not self.check_authenticated():
+        if not self.is_authorized(IDEA_EDITOR):
             return
 
         body_data = self.get_body_text()
@@ -164,7 +182,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.redirect("/onyo/ideas")
 
     def delete_idea(self, idea_guid):
-        if not self.check_authenticated():
+        if not self.is_authorized(IDEA_EDITOR):
             return
 
         body_data = self.get_body_text()
@@ -181,15 +199,27 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         content_length = int(self.headers["Content-Length"])
         return bytes.decode(self.rfile.read(content_length))
 
-    def check_authenticated(self):
-        if not self.get_authenticated_user():
+    def is_authorized(self, required_role):
+        user = self.get_authenticated_user()
+
+        if not user:
             self._reply(401, "Not authenticated")
             return False
+        if required_role not in user.roles:
+            self._reply(403, "You do not have permission for this operation")
+            return False
+
         return True
 
-    def get_authenticated_user(self):
+    def get_authenticated_user(self) -> AuthenticatedUser:
         # Relies on nginx config to forward user in this header:
-        return self.headers.get("X-User")
+        username = self.headers.get("X-User")
+        if not username:
+            return None
+        return AuthenticatedUser(
+            name=username,
+            roles=USER_ROLE_MAPPING.get(username, set()),
+        )
 
     def reply_template(self, template_file, **kw_args):
         template = self.template_env.get_template(template_file)
