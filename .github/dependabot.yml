@@ -6,6 +6,6 @@
 version: 2
 updates:
   - package-ecosystem: "pip"
-    directory: "/backend"
+    directory: "/backend/requirements.txt"
     schedule:
       interval: "weekly"
