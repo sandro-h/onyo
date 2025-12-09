@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 import re
 import http.server
+
+from onyo_backend.shopping_list import assemble_shopping_list, get_shopping_links
 from .recipes import NUM_COLORS, Mise
 from onyo_backend.recipes import list_recipes
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -71,17 +73,20 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def render_recipe(self, recipe_id):
         _, recipes = list_recipes()
+        shopping_links = get_shopping_links()
 
         recipe = recipes.get(recipe_id.lower())
         if not recipe:
             self._reply(404, f"No recipe {recipe_id}")
             return
 
+        shopping_list = assemble_shopping_list(recipe, shopping_links)
         back_link = f"/categories/{list(recipe.categories)[0]}"
 
         self.reply_template(
             "recipe.html",
             recipe=recipe,
+            shopping_list=shopping_list,
             Mise=Mise,
             NUM_COLORS=NUM_COLORS,
             back_link=back_link,

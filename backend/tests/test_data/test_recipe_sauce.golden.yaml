@@ -40,93 +40,113 @@ output:
   - Sauces
   icon: 🌯
   ingredients:
-  - name: oil
+  - uid:
+    name: oil
     text: 3 tsbp olive oil
     mise: none
     linked_recipe_id:
-  - name: flour
+  - uid:
+    name: flour
     text: 3 tbsp flour
     mise: none
     linked_recipe_id:
-  - name: chili powder
+  - uid:
+    name: chili powder
     text: 1 tbsp chili powder
     mise: start
     linked_recipe_id:
-  - name: cumin
+  - uid:
+    name: cumin
     text: 1 tsp cumin
     mise: none
     linked_recipe_id:
-  - name: garlic powder
+  - uid:
+    name: garlic powder
     text: 1/2 tsb garlic powder
     mise: none
     linked_recipe_id:
-  - name: oregano
+  - uid:
+    name: oregano
     text: 1/4 tsp oregano
     mise: none
     linked_recipe_id:
-  - name: salt
+  - uid:
+    name: salt
     text: 1/4 tsp salt
     mise: end
     linked_recipe_id:
-  - name: tomato paste
+  - uid:
+    name: tomato paste
     text: 2 tbsp tomato paste
     mise: none
     linked_recipe_id:
-  - name: broth
+  - uid:
+    name: broth
     text: 2 cups vegetable/chicken broth
     mise: none
     linked_recipe_id:
-  - name: vinegar
+  - uid:
+    name: vinegar
     text: 1 tsp apple cider vinegar
     mise: none
     linked_recipe_id:
   ingredient_map:
     oil:
+      uid:
       name: oil
       text: 3 tsbp olive oil
       mise: none
       linked_recipe_id:
     flour:
+      uid:
       name: flour
       text: 3 tbsp flour
       mise: none
       linked_recipe_id:
     chili powder:
+      uid:
       name: chili powder
       text: 1 tbsp chili powder
       mise: start
       linked_recipe_id:
     cumin:
+      uid:
       name: cumin
       text: 1 tsp cumin
       mise: none
       linked_recipe_id:
     garlic powder:
+      uid:
       name: garlic powder
       text: 1/2 tsb garlic powder
       mise: none
       linked_recipe_id:
     oregano:
+      uid:
       name: oregano
       text: 1/4 tsp oregano
       mise: none
       linked_recipe_id:
     salt:
+      uid:
       name: salt
       text: 1/4 tsp salt
       mise: end
       linked_recipe_id:
     tomato paste:
+      uid:
       name: tomato paste
       text: 2 tbsp tomato paste
       mise: none
       linked_recipe_id:
     broth:
+      uid:
       name: broth
       text: 2 cups vegetable/chicken broth
       mise: none
       linked_recipe_id:
     vinegar:
+      uid:
       name: vinegar
       text: 1 tsp apple cider vinegar
       mise: none
@@ -170,23 +190,28 @@ output:
         color_index: 4
         type: ingredient
     ingredients:
-    - name: chili powder
+    - uid:
+      name: chili powder
       text: 1 tbsp chili powder
       mise: start
       linked_recipe_id:
-    - name: cumin
+    - uid:
+      name: cumin
       text: 1 tsp cumin
       mise: none
       linked_recipe_id:
-    - name: garlic powder
+    - uid:
+      name: garlic powder
       text: 1/2 tsb garlic powder
       mise: none
       linked_recipe_id:
-    - name: oregano
+    - uid:
+      name: oregano
       text: 1/4 tsp oregano
       mise: none
       linked_recipe_id:
-    - name: salt
+    - uid:
+      name: salt
       text: 1/4 tsp salt
       mise: end
       linked_recipe_id:
@@ -235,19 +260,23 @@ output:
         style: ''
         type: text
     ingredients:
-    - name: oil
+    - uid:
+      name: oil
       text: 3 tsbp olive oil
       mise: none
       linked_recipe_id:
-    - name: flour
+    - uid:
+      name: flour
       text: 3 tbsp flour
       mise: none
       linked_recipe_id:
-    - name: tomato paste
+    - uid:
+      name: tomato paste
       text: 2 tbsp tomato paste
       mise: none
       linked_recipe_id:
-    - name: broth
+    - uid:
+      name: broth
       text: 2 cups vegetable/chicken broth
       mise: none
       linked_recipe_id:
@@ -276,7 +305,8 @@ output:
         style: ''
         type: text
     ingredients:
-    - name: vinegar
+    - uid:
+      name: vinegar
       text: 1 tsp apple cider vinegar
       mise: none
       linked_recipe_id:

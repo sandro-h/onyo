@@ -3,14 +3,13 @@ input:
   icon: 🌯
   category: Meal
   ingredients:
-  - Diced $chicken$
-  - 1 white $onion$, diced
-  - 1 $bell pepper$, diced
-  - A few jarred charred peppers (optional)
-  - 1 can of $black beans$
+  - Diced $chicken$                           [diced chicken]
+  - 1 white $onion$, diced                    [yellow onion]
+  - 1 $bell pepper$, diced                    [bell pepper]
+  - 1 can of $black beans$                    [black beans]
   - ~enchiladasauce~
-  - 3/4 block of $cheddar$
-  - 6 big $tortillas$
+  - 3/4 block of $cheddar$                    [cheddar]
+  - 6 big $tortillas$                         [big tortillas]
   steps:
   - tasks:
     - Preheat oven to 175°C (top/bottom)
@@ -37,65 +36,74 @@ output:
   - Meal
   icon: 🌯
   ingredients:
-  - name: chicken
+  - uid: diced chicken
+    name: chicken
     text: Diced chicken
     mise: none
     linked_recipe_id:
-  - name: onion
+  - uid: yellow onion
+    name: onion
     text: 1 white onion, diced
     mise: none
     linked_recipe_id:
-  - name: bell pepper
+  - uid: bell pepper
+    name: bell pepper
     text: 1 bell pepper, diced
     mise: none
     linked_recipe_id:
-  - name:
-    text: A few jarred charred peppers (optional)
-    mise: none
-    linked_recipe_id:
-  - name: black beans
+  - uid: black beans
+    name: black beans
     text: 1 can of black beans
     mise: none
     linked_recipe_id:
-  - name:
+  - uid:
+    name:
     text: enchiladasauce
     mise: none
     linked_recipe_id: enchiladasauce
-  - name: cheddar
+  - uid: cheddar
+    name: cheddar
     text: 3/4 block of cheddar
     mise: none
     linked_recipe_id:
-  - name: tortillas
+  - uid: big tortillas
+    name: tortillas
     text: 6 big tortillas
     mise: none
     linked_recipe_id:
   ingredient_map:
     chicken:
+      uid: diced chicken
       name: chicken
       text: Diced chicken
       mise: none
       linked_recipe_id:
     onion:
+      uid: yellow onion
       name: onion
       text: 1 white onion, diced
       mise: none
       linked_recipe_id:
     bell pepper:
+      uid: bell pepper
       name: bell pepper
       text: 1 bell pepper, diced
       mise: none
       linked_recipe_id:
     black beans:
+      uid: black beans
       name: black beans
       text: 1 can of black beans
       mise: none
       linked_recipe_id:
     cheddar:
+      uid: cheddar
       name: cheddar
       text: 3/4 block of cheddar
       mise: none
       linked_recipe_id:
     tortillas:
+      uid: big tortillas
       name: tortillas
       text: 6 big tortillas
       mise: none
@@ -126,7 +134,8 @@ output:
         style: ''
         type: text
     ingredients:
-    - name: chicken
+    - uid: diced chicken
+      name: chicken
       text: Diced chicken
       mise: none
       linked_recipe_id:
@@ -170,15 +179,18 @@ output:
         style: ''
         type: text
     ingredients:
-    - name: onion
+    - uid: yellow onion
+      name: onion
       text: 1 white onion, diced
       mise: none
       linked_recipe_id:
-    - name: bell pepper
+    - uid: bell pepper
+      name: bell pepper
       text: 1 bell pepper, diced
       mise: none
       linked_recipe_id:
-    - name: black beans
+    - uid: black beans
+      name: black beans
       text: 1 can of black beans
       mise: none
       linked_recipe_id:

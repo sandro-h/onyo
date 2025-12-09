@@ -7,12 +7,14 @@ import yaml
 from functools import lru_cache
 from pathlib import Path
 
-RECIPE_DIR = Path(__file__).parent.parent.parent / "data" / "recipes"
+DATA_DIR = Path(__file__).parent.parent.parent / "data"
+RECIPE_DIR = DATA_DIR / "recipes"
 NUM_COLORS = 8
 INGR_PATTERN_STRING = r"\$([^$]+)\$"
 TIMER_PATTERN_STRING = r"!(([^!]+) *(second|minute|hour)s?)!"
 BOLD_PATTERN_STRING = r"\*\*([^*]+)\*\*"
 INGR_PATTERN = re.compile(INGR_PATTERN_STRING)
+INGR_UID_PATTERN = re.compile(r"\s*\[([^\]]+)\]$")
 TIMER_PATTERN = re.compile(TIMER_PATTERN_STRING)
 BOLD_PATTERN = re.compile(BOLD_PATTERN_STRING)
 TASK_SPLIT_PATTERN = re.compile(
@@ -30,6 +32,7 @@ class Mise(StrEnum):
 @dataclass_json
 @dataclass
 class Ingredient:
+    uid: str = ""
     name: str = ""
     text: str = ""
     mise: Mise = field(
@@ -216,11 +219,18 @@ def handle_ingredients(ingredient_lines, recipe: Recipe):
 
 
 def handle_ingredient(ingr_line) -> Ingredient:
+    text, uid = sub_and_keep_match(
+        INGR_UID_PATTERN,
+        lambda _: "",
+        ingr_line,
+    )
+
     text, name = sub_and_keep_match(
         INGR_PATTERN,
         clean_ingr_name,
-        ingr_line,
+        text,
     )
+
     text, link_id = sub_and_keep_match(
         INGR_LINK_PATTERN,
         clean_ingr_name,
@@ -228,6 +238,7 @@ def handle_ingredient(ingr_line) -> Ingredient:
     )
 
     return Ingredient(
+        uid=uid,
         name=name,
         text=text,
         linked_recipe_id=link_id,
