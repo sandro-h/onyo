@@ -159,11 +159,29 @@
             margin-bottom: 0px;
             text-align: center;
         }
+
+        .top-nav {
+            position: relative;
+        }
+
+        #toast {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5em;
+            border-radius: 0.5em;
+        }
+
+        .toast-success {
+            background-color: rgba(47, 255, 82, 0.438);
+            border: solid 1px rgba(5, 102, 24, 0.438);
+        }
     </style>
     <script type="text/javascript">
 
         function main() {
             let curTabIndex = 0;
+            let toastTimeout;
             const tabs = document.querySelectorAll('.tab');
             const switchers = document.querySelectorAll('.switcher');
             const shoppingListBtn = document.getElementById('shopping-list-btn');
@@ -261,6 +279,18 @@
             function copyShoppingList() {
                 const shoppingListText = document.getElementById("shopping-list").value
                 navigator.clipboard.writeText(shoppingListText);
+                showToast('success', 'Copied');
+            }
+
+            function showToast(type, msg) {
+                const toast = document.getElementById('toast');
+
+                toast.textContent = msg;
+                toast.classList.add(`toast-${type}`);
+                toast.classList.remove('hidden');
+
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => toast.classList.add('hidden'), 1000);
             }
         }
 
@@ -276,8 +306,8 @@
             <a class="control-btn" href="{{ link }}/edit">✏️</a>
             {% endif %}
             <a id="shopping-list-btn" class="control-btn" href="#">Shopping list</a>
+            <div id="toast" class="hidden"></div>
         </nav>
-
 
         <nav class="sub-nav">
             <div class="switcher selected" data-tab="0">Ingr</div>
