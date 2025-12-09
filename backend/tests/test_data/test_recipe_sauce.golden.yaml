@@ -15,6 +15,7 @@ input:
   - 2 tbsp $tomato paste$
   - 2 cups vegetable/chicken $broth$
   - 1 tsp apple cider $vinegar$
+  - 1/2 tsp $salt:2$
   steps:
   - tasks:
     - Mix $chili powder$, $cumin$, $garlic powder$ ,$oregano$, $salt$
@@ -33,63 +34,71 @@ input:
   - tasks:
     - Remove from heat, then whisk in the $vinegar$ and season to taste with a generous
       amount of freshly ground black pepper.
+    - Dummy line with separate $salt:2$ ingredient
 output:
   id: testrecipe
   name: Enchilada Sauce
   categories:
   - Sauces
   icon: 🌯
-  ingredients:
-  - uid:
-    name: oil
-    text: 3 tsbp olive oil
-    mise: none
-    linked_recipe_id:
-  - uid:
-    name: flour
-    text: 3 tbsp flour
-    mise: none
-    linked_recipe_id:
-  - uid:
-    name: chili powder
-    text: 1 tbsp chili powder
-    mise: start
-    linked_recipe_id:
-  - uid:
-    name: cumin
-    text: 1 tsp cumin
-    mise: none
-    linked_recipe_id:
-  - uid:
-    name: garlic powder
-    text: 1/2 tsb garlic powder
-    mise: none
-    linked_recipe_id:
-  - uid:
-    name: oregano
-    text: 1/4 tsp oregano
-    mise: none
-    linked_recipe_id:
-  - uid:
-    name: salt
-    text: 1/4 tsp salt
-    mise: end
-    linked_recipe_id:
-  - uid:
-    name: tomato paste
-    text: 2 tbsp tomato paste
-    mise: none
-    linked_recipe_id:
-  - uid:
-    name: broth
-    text: 2 cups vegetable/chicken broth
-    mise: none
-    linked_recipe_id:
-  - uid:
-    name: vinegar
-    text: 1 tsp apple cider vinegar
-    mise: none
-    linked_recipe_id:
+  ingredient_groups:
+  - title: ''
+    ingredients:
+    - uid:
+      name: oil
+      text: 3 tsbp olive oil
+      mise: none
+      linked_recipe_id:
+    - uid:
+      name: flour
+      text: 3 tbsp flour
+      mise: none
+      linked_recipe_id:
+    - uid:
+      name: chili powder
+      text: 1 tbsp chili powder
+      mise: start
+      linked_recipe_id:
+    - uid:
+      name: cumin
+      text: 1 tsp cumin
+      mise: none
+      linked_recipe_id:
+    - uid:
+      name: garlic powder
+      text: 1/2 tsb garlic powder
+      mise: none
+      linked_recipe_id:
+    - uid:
+      name: oregano
+      text: 1/4 tsp oregano
+      mise: none
+      linked_recipe_id:
+    - uid:
+      name: salt
+      text: 1/4 tsp salt
+      mise: end
+      linked_recipe_id:
+    - uid:
+      name: tomato paste
+      text: 2 tbsp tomato paste
+      mise: none
+      linked_recipe_id:
+    - uid:
+      name: broth
+      text: 2 cups vegetable/chicken broth
+      mise: none
+      linked_recipe_id:
+    - uid:
+      name: vinegar
+      text: 1 tsp apple cider vinegar
+      mise: none
+      linked_recipe_id:
+    - uid:
+      name: salt:2
+      text: 1/2 tsp salt
+      mise: none
+      linked_recipe_id:
   ingredient_map:
     oil:
       uid:
@@ -149,6 +158,12 @@ output:
       uid:
       name: vinegar
       text: 1 tsp apple cider vinegar
+      mise: none
+      linked_recipe_id:
+    salt:2:
+      uid:
+      name: salt:2
+      text: 1/2 tsp salt
       mise: none
       linked_recipe_id:
   steps:
@@ -304,10 +319,26 @@ output:
           pepper.'
         style: ''
         type: text
+    - parts:
+      - text: 'Dummy line with separate '
+        style: ''
+        type: text
+      - name: salt:2
+        text: salt
+        color_index: 1
+        type: ingredient
+      - text: ' ingredient'
+        style: ''
+        type: text
     ingredients:
     - uid:
       name: vinegar
       text: 1 tsp apple cider vinegar
+      mise: none
+      linked_recipe_id:
+    - uid:
+      name: salt:2
+      text: 1/2 tsp salt
       mise: none
       linked_recipe_id:
     timers: []

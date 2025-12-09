@@ -48,8 +48,14 @@
             border-bottom: solid 2px rgb(0, 105, 170);
         }
 
+        .ingredients {
+            padding-top: 0.5em;
+        }
+
         ol,
         ul {
+            margin-top: 4px;
+            margin-bottom: 4px;
             padding-left: 1em;
         }
 
@@ -121,6 +127,11 @@
             white-space: pre;
             overflow-wrap: normal;
             overflow-x: scroll;
+        }
+
+        h4 {
+            margin-top: 0.5em;
+            margin-bottom: 0px;
         }
     </style>
     <script type="text/javascript">
@@ -220,9 +231,11 @@
         </nav>
 
         <div class="tab visible ingredients">
+            {% set mise_index = namespace(value=0) %}
+            {% for group in recipe.ingredient_groups %}
+            <h4>{{ group.title }}</h4>
             <ul>
-                {% set mise_index = namespace(value=0) %}
-                {% for ingr in recipe.ingredients %}
+                {% for ingr in group.ingredients %}
                     {% if ingr.mise == Mise.START %}
                         <div class="mise col{{mise_index.value % NUM_COLORS}}">
                         {% set mise_index.value = mise_index.value + 1 %}
@@ -239,6 +252,7 @@
                     {% endif %}
                 {% endfor %}
             </ul>
+            {% endfor %}
             <textarea id="shopping-list">
 {%- for item in shopping_list.items %}
 {{ item.link }} {{ item.text }}

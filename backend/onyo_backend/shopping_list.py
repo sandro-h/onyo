@@ -62,4 +62,4 @@ def assemble_shopping_list(
 
         return ShoppingListItem(text=ingr.text, link=link.link if link else "")
 
-    return ShoppingList(items=[to_item(ingr) for ingr in recipe.ingredients])
+    return ShoppingList(items=[to_item(ingr) for ingr in recipe.all_ingredients()])

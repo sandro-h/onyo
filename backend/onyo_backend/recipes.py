@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from enum import StrEnum, auto
 import math
 import re
+from typing import Generator
 from dataclasses_json import dataclass_json, config
 import yaml
 from functools import lru_cache
@@ -93,14 +94,25 @@ class TimerPart:
 
 @dataclass_json
 @dataclass
+class IngredientGroup:
+    title: str
+    ingredients: list[Ingredient] = field(default_factory=list)
+
+
+@dataclass_json
+@dataclass
 class Recipe:
     id: str
     name: str
     categories: set[str]
     icon: str
-    ingredients: list[Ingredient] = field(default_factory=list)
+    ingredient_groups: list[IngredientGroup] = field(default_factory=list)
     ingredient_map: dict[str, Ingredient] = field(default_factory=dict)
     steps: list[Step] = field(default_factory=list)
+
+    def all_ingredients(self) -> Generator[Ingredient]:
+        for g in self.ingredient_groups:
+            yield from g.ingredients
 
 
 @dataclass_json
@@ -169,7 +181,7 @@ def load_recipes(
 
 def resolve_links(recipes: dict[str, Recipe]):
     for r in recipes.values():
-        for i in r.ingredients:
+        for i in r.all_ingredients():
             if not i.linked_recipe_id:
                 continue
 
@@ -214,20 +226,31 @@ def load_recipe(data, recipe_id) -> Recipe:
 
 def handle_ingredients(ingredient_lines, recipe: Recipe):
     last_line = None
+    group = IngredientGroup(title="")
+
+    def add_current_group():
+        if group.ingredients:
+            recipe.ingredient_groups.append(group)
+
     for ingr_line in ingredient_lines:
-        if ingr_line == ")":
-            recipe.ingredients[-1].mise = Mise.END
+        if ingr_line.startswith("=") and ingr_line.endswith("="):
+            add_current_group()
+            group = IngredientGroup(title=ingr_line[1:-1].strip())
+        elif ingr_line == ")":
+            group.ingredients[-1].mise = Mise.END
         elif ingr_line != "(":
             ingr = handle_ingredient(ingr_line)
             if last_line == "(":
                 ingr.mise = Mise.START
 
-            recipe.ingredients.append(ingr)
+            group.ingredients.append(ingr)
 
             if ingr.name:
                 recipe.ingredient_map[ingr.name] = ingr
 
         last_line = ingr_line
+
+    add_current_group()
 
 
 def handle_ingredient(ingr_line) -> Ingredient:

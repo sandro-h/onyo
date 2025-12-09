@@ -7,6 +7,7 @@ input:
   - 1 white $onion$, diced                    [yellow onion]
   - 1 $bell pepper$, diced                    [bell pepper]
   - 1 can of $black beans$                    [black beans]
+  - =Filling=
   - ~enchiladasauce~
   - 3/4 block of $cheddar$                    [cheddar]
   - 6 big $tortillas$                         [big tortillas]
@@ -35,42 +36,46 @@ output:
   categories:
   - Meal
   icon: 🌯
-  ingredients:
-  - uid: diced chicken
-    name: chicken
-    text: Diced chicken
-    mise: none
-    linked_recipe_id:
-  - uid: yellow onion
-    name: onion
-    text: 1 white onion, diced
-    mise: none
-    linked_recipe_id:
-  - uid: bell pepper
-    name: bell pepper
-    text: 1 bell pepper, diced
-    mise: none
-    linked_recipe_id:
-  - uid: black beans
-    name: black beans
-    text: 1 can of black beans
-    mise: none
-    linked_recipe_id:
-  - uid:
-    name:
-    text: enchiladasauce
-    mise: none
-    linked_recipe_id: enchiladasauce
-  - uid: cheddar
-    name: cheddar
-    text: 3/4 block of cheddar
-    mise: none
-    linked_recipe_id:
-  - uid: big tortillas
-    name: tortillas
-    text: 6 big tortillas
-    mise: none
-    linked_recipe_id:
+  ingredient_groups:
+  - title: ''
+    ingredients:
+    - uid: diced chicken
+      name: chicken
+      text: Diced chicken
+      mise: none
+      linked_recipe_id:
+    - uid: yellow onion
+      name: onion
+      text: 1 white onion, diced
+      mise: none
+      linked_recipe_id:
+    - uid: bell pepper
+      name: bell pepper
+      text: 1 bell pepper, diced
+      mise: none
+      linked_recipe_id:
+    - uid: black beans
+      name: black beans
+      text: 1 can of black beans
+      mise: none
+      linked_recipe_id:
+  - title: Filling
+    ingredients:
+    - uid:
+      name:
+      text: enchiladasauce
+      mise: none
+      linked_recipe_id: enchiladasauce
+    - uid: cheddar
+      name: cheddar
+      text: 3/4 block of cheddar
+      mise: none
+      linked_recipe_id:
+    - uid: big tortillas
+      name: tortillas
+      text: 6 big tortillas
+      mise: none
+      linked_recipe_id:
   ingredient_map:
     chicken:
       uid: diced chicken
