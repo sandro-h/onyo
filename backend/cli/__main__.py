@@ -67,6 +67,9 @@ def generate_static(output_dir: Path, recipe_dir: Path = typer.Option(RECIPE_DIR
     index_page = re.sub(
         r'href="/onyo/categories/([^"]+)"', r'href="cat_\1.html"', index_page
     )
+    index_page = re.sub(
+        r'href="/onyo/recipes/([^"]+)"', r'href="rec_\1.html"', index_page
+    )
     index_page = index_page.replace('href="/onyo/ideas"', 'href="ideas.html"')
     write_page(output_dir / "index.html", index_page)
 
