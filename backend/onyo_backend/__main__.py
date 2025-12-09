@@ -22,7 +22,6 @@ def main():
 
 class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        self.additional_headers = {}
         self.template_env = Environment(
             loader=PackageLoader("onyo_backend"), autoescape=select_autoescape()
         )
@@ -184,13 +183,6 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_response(302)
         self.send_header("Location", path)
         self.end_headers()
-
-    def end_headers(self):
-        # Hack to get in additional headers when serving static content
-        for k, v in self.additional_headers.items():
-            self.send_header(k, v)
-        self.additional_headers.clear()
-        return super().end_headers()
 
 
 def recipe_link(recipe_id):

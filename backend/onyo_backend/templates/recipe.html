@@ -3,10 +3,7 @@
 
 <head>
     <title>{{ recipe.name }} - Onyo</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <link rel="icon" type="image/x-icon" href="/onyo/static/logo192.png">
-    <link rel="stylesheet" href="/onyo/static/style.css">
+    {% include "_preamble.html" %}
     <style type="text/css">
         .tab {
             display: none;
@@ -27,10 +24,6 @@
 
         nav.top-nav>h1 {
             flex-grow: 1;
-        }
-
-        .control-btn {
-            margin-left: 0.5em;
         }
 
         nav.sub-nav {

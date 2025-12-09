@@ -1,22 +1,17 @@
 # Onyo
 
-Start:
-
-Make sure you have a `backend/.passphrase` file for the `key.pem`.
-
-```shell
-make start
-```
-
-or
-
-```shell
-.\start.ps1
-```
-
 http://localhost:13012/
 
-The app should be put behind nginx for SSL termination.
+The app should be put behind nginx for SSL termination. Additionally, nginx can be configured for basic auth so
+that editing operations are protected. Example nginx config:
+
+```
+location /onyo {
+    proxy_pass http://127.0.0.1:13012/onyo;
+    auth_basic "Onyo";
+    auth_basic_user_file .onyo_htpasswd;
+}
+```
 
 ## Development
 
@@ -39,18 +34,18 @@ python3 -m venv venv
 pip install -r requirements.txt
 ```
 
-Start backend:
+Start/stop/restart backend:
 
 ```shell
-cd backend
-.\venv\Scripts\Activate.ps1
-python -m onyo_backend
+make start
+make stop
+make restart
 ```
 
-With hot reloading (buggy):
+With hot reloading (may be buggy):
 
 ```shell
-python -m jurigged -m onyo_backend
+make dev
 ```
 
 Tests and linting:
