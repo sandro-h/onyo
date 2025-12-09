@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/x-icon" href="/static/logo192.png">
+    <link rel="stylesheet" href="/static/style.css">
+    <style type="text/css">
+        .tab {
+            display: none;
+        }
+
+        .tab.visible {
+            display: flex;
+            flex-grow: 1;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: solid 2px lightgray;
+        }
+
+        .switcher {
+            cursor: pointer;
+            /* min-width: 100%; */
+            width: 100%;
+            text-align: center;
+            padding-top: 1em;
+            padding-bottom: 1em;
+            color: gray;
+        }
+
+        .switcher.selected {
+            color: black;
+            font-weight: bold;
+            border-bottom: solid 2px rgb(0, 105, 170);
+        }
+
+        ol,
+        ul {
+            padding-left: 1em;
+        }
+
+        li {
+            padding-bottom: 0.5em;
+        }
+
+        /* to put ingredients at bottom of screen */
+        /* section {
+             flex: 1; 
+        } */
+
+        footer {
+            width: 100%;
+            text-align: center;
+            border-top: solid 1px gray;
+        }
+
+        .timer>a {
+            color: rgb(57, 57, 245);
+            font-weight: bold;
+        }
+
+        .timer::after {
+            content: '\1F551';
+            font-size: 70%;
+            vertical-align: super;
+            text-decoration: none;
+        }
+
+        .ingr1 {
+            color: green;
+            font-weight: bold;
+        }
+
+
+        .ingr2 {
+            color: brown;
+            font-weight: bold;
+        }
+
+        .ingr3 {
+            color: lightskyblue;
+            font-weight: bold;
+        }
+
+        .ingr4 {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .ingr5 {
+            color: magenta;
+            font-weight: bold;
+        }
+
+        .ingr6 {
+            color: pink;
+            font-weight: bold;
+        }
+
+        .ingr7 {
+            color: blue;
+            font-weight: bold;
+        }
+
+        .ingr8 {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+    <script type="text/javascript">
+
+        function main() {
+            let curTabIndex = 0;
+            const tabs = document.querySelectorAll('.tab');
+            const switchers = document.querySelectorAll('.switcher');
+            const tabCount = tabs.length;
+
+            document.querySelectorAll('.switcher').forEach(e => e.addEventListener('click', _ => handleSwitcherClick(e)));
+
+            document.addEventListener('touchstart', handleTouchStart, false);
+            document.addEventListener('touchend', handleTouchStop, false);
+            document.addEventListener('touchcancel', handleTouchStop, false);
+            document.addEventListener('touchmove', handleTouchMove(left => {
+                const index = Math.min(tabCount - 1, Math.max(0, curTabIndex + (left ? -1 : 1)));
+                selectTab(index);
+            }), false);
+
+            function handleSwitcherClick(switcher) {
+                selectTab(parseInt(switcher.dataset.tab));
+            }
+
+            function selectTab(indexToSelect) {
+                tabs[curTabIndex].classList.remove('visible');
+                switchers[curTabIndex].classList.remove('selected');
+                tabs[indexToSelect].classList.add('visible');
+                switchers[indexToSelect].classList.add('selected');
+                curTabIndex = indexToSelect;
+            }
+
+            function handleTouchStart(ev) {
+                const touches = ev.touches || ev.originalEvent.touches;
+                window.firstTouchX = touches[0].clientX;
+                window.firstTouchY = touches[0].clientY;
+                window.touchTriggered = false;
+            }
+
+            function handleTouchStop() {
+                window.touchTriggered = false;
+                window.firstTouchX = 0;
+                window.firstTouchY = 0;
+            }
+
+            function handleTouchMove(callback) {
+                return function handle(ev) {
+                    if (window.touchTriggered) {
+                        return;
+                    }
+                    const triggerRatio = 0.25;
+                    const x = ev.touches[0].clientX;
+                    const y = ev.touches[0].clientY;
+                    const dx = x - window.firstTouchX;
+                    const dy = y - window.firstTouchY;
+
+                    // Note: comparing dy to innerWidth is on purpose
+                    if (dx / window.innerWidth > triggerRatio && Math.abs(dy / window.innerWidth) < 0.1) {
+                        callback(true);
+                        window.touchTriggered = true;
+                    }
+                    else if (dx / window.innerWidth < -triggerRatio && Math.abs(dy / window.innerWidth) < 0.1) {
+                        callback(false);
+                        window.touchTriggered = true;
+                    }
+                };
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', main);
+    </script>
+</head>
+
+<body>
+    <main>
+        <h1><a href="/{{recipe.category}}">&#9001; {{ recipe.name }}</a></h1>
+        <nav>
+            <div class="switcher selected" data-tab="0">Ingr</div>
+            {% for step in recipe.steps %}
+            <div class="switcher" data-tab="{{loop.index}}">{{loop.index}}</div>
+            {% endfor %}
+        </nav>
+        <div class="tab visible">
+            <ul>
+                {% for ingr in recipe.ingredients %}
+                <li>{{ ingr.text }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% for step in recipe.steps %}
+        <div class="tab">
+            <section>
+                <ol>
+                    {% for task in step.tasks %}
+                    <li>{{ task|safe }}</li>
+                    {% endfor %}
+                </ol>
+            </section>
+            {% if step.ingredients %}
+            <footer>
+                <div class="step_ingredients">
+                    {% for ingr in step.ingredients %}
+                    <br>{{ ingr|safe }}
+                    {% endfor %}
+                </div>
+            </footer>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </main>
+</body>
+
+</html>

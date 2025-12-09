@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/x-icon" href="/static/logo192.png">
+    <link rel="stylesheet" href="/static/style.css">
+    <style type="text/css">
+        ul {
+            padding-left: 1em;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+        section {
+            text-align: center;
+        }
+
+        .icon-l {
+            float: left;
+            opacity: 0.6;
+        }
+
+        .icon-r {
+            float: right;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1><a href="/">&#9001; {{ category.name }}</a></h1>
+        <section>
+            <ul>
+                {% for recipe in category.recipes %}
+                <li>
+                    <a class="link-btn" href="/{{category.name}}/{{recipe.id}}">
+                        <span class="icon-l">{{recipe.icon}}</span>
+                        <span>{{recipe.name}}</span>
+                        <span class="icon-r">{{recipe.icon}}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+</body>
+
+</html>

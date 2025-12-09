@@ -1,0 +1,3 @@
+[MESSAGES CONTROL]
+
+disable=missing-docstring,duplicate-code,fixme,exec-used,no-member,invalid-name,wrong-import-order,line-too-long

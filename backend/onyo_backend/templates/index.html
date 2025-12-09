@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/x-icon" href="/static/logo192.png">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="manifest" href="/static/manifest.json">
+    <script src="/static/index.js"></script>
+    <style type="text/css">
+        h1 {
+            font-size: 150%;
+            margin: 0;
+        }
+
+        ul {
+            padding-left: 1em;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+        section {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Onyo</h1>
+        <section>
+            <ul>
+                {% for cat in categories.values()|sort(attribute='name') %}
+                <li><a class="link-btn" href="/{{cat.name}}">{{cat.name}}</a></li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+</body>
+
+</html>
