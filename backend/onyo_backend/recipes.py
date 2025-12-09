@@ -117,7 +117,7 @@ def handle_ingredients(ingredient_lines, recipe: Recipe):
     def handle_ingr_name(m):
         ingr = recipe.ingredients[-1]
         ingr.name = m.group(1)
-        return ingr.name
+        return clean_ingr_name(ingr.name)
 
     last_line = None
     for ingr_line in ingredient_lines:
@@ -134,9 +134,7 @@ def handle_ingredients(ingredient_lines, recipe: Recipe):
 
 
 def handle_steps(step_lines, recipe: Recipe):
-    ingr_indexes = {}
-
-    def handle_task_ingr_name(m):
+    def handle_task_ingr_name(m, ingr_indexes):
         step = recipe.steps[-1]
 
         ingr_name = m.group(1)
@@ -148,14 +146,14 @@ def handle_steps(step_lines, recipe: Recipe):
             ingr_name,
             Ingredient(
                 name=ingr_name,
-                text=ingr_name,
+                text=clean_ingr_name(ingr_name),
             ),
         )
 
         if not seen:
             step.ingredients.append(ingr)
 
-        return f'<span class="ingr{color_index}">{ingr_name}</span>'
+        return f'<span class="ingr col{color_index}">{clean_ingr_name(ingr_name)}</span>'
 
     def handle_timer(m):
         factors = {
@@ -173,10 +171,14 @@ def handle_steps(step_lines, recipe: Recipe):
     for step_line in step_lines:
         step = Step()
         recipe.steps.append(step)
+        ingr_indexes = {}
         for task_line in step_line["tasks"]:
-            clean_task = re.sub(r"@([^@]+)@", handle_task_ingr_name, task_line)
+            clean_task = re.sub(r"@([^@]+)@", lambda m: handle_task_ingr_name(m, ingr_indexes), task_line)
             clean_task = re.sub(
                 r"!(([^!]+) *(second|minute|hour)s?)!", handle_timer, clean_task
             )
             clean_task = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", clean_task)
             step.tasks.append(clean_task)
+
+def clean_ingr_name(ingr_name):
+    return re.sub(r":[0-9]+$", "", ingr_name)

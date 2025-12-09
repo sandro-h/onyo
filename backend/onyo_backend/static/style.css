@@ -8,6 +8,14 @@ body {
     border: 0;
 }
 
+@media only screen and (min-width: 768px) {
+
+    html,
+    body {
+        width: 768px;
+    }
+}
+
 main {
     padding: 0.5em;
     max-width: 100%;
@@ -62,4 +70,44 @@ a.control-btn:focus {
     color: black;
     box-shadow: 0px 1px 3px #aaa;
     display: inline-block;
+}
+
+.col0 {
+    color: green;
+    border-color: green;
+}
+
+.col1 {
+    color: brown;
+    border-color: brown;
+}
+
+.col2 {
+    color: lightskyblue;
+    border-color: lightskyblue;
+}
+
+.col3 {
+    color: orange;
+    border-color: orange;
+}
+
+.col4 {
+    color: magenta;
+    border-color: magenta;
+}
+
+.col5 {
+    color: pink;
+    border-color: pink;
+}
+
+.col6 {
+    color: blue;
+    border-color: blue;
+}
+
+.col7 {
+    color: red;
+    border-color: red;
 }
