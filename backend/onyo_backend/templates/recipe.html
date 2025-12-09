@@ -13,7 +13,8 @@
             display: flex;
             flex-grow: 1;
             flex-direction: column;
-            align-items: center;
+            padding-left: 0.5em;
+            padding-right: 0.5em;
         }
 
         nav.top-nav {
@@ -142,6 +143,7 @@
         h4 {
             margin-top: 0.5em;
             margin-bottom: 0px;
+            text-align: center;
         }
     </style>
     <script type="text/javascript">
@@ -266,6 +268,20 @@
                 {% endfor %}
             </ul>
             {% endfor %}
+            
+            {% if recipe.notes %}
+            <h4>Notes</h4>
+            {% for note in recipe.notes %}
+            <li>
+                {%- for part in note.parts -%}
+                    {%- if part.type == "text" -%}
+                        <span class="{{ part.style }}">{{- part.text -}}</span>
+                    {%- endif -%}
+                {%- endfor -%}
+            </li>
+            {% endfor %}
+            {% endif %}
+
             <textarea id="shopping-list">
 {%- for item in shopping_list.items %}
 {{ item.link }} {{ item.text }}

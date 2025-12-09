@@ -32,6 +32,9 @@ input:
       top
   - tasks:
     - Bake enchiladas in oven for !20 minutes!
+  notes:
+  - hello world
+  - have some **bold formatting**
 output:
   id: testrecipe
   name: Enchiladas
@@ -233,3 +236,15 @@ output:
         type: timer
     ingredients: []
     timers: []
+  notes:
+  - parts:
+    - text: hello world
+      style: ''
+      type: text
+  - parts:
+    - text: 'have some '
+      style: ''
+      type: text
+    - text: bold formatting
+      style: bold
+      type: text

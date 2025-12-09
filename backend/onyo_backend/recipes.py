@@ -6,7 +6,7 @@ import traceback
 from typing import Generator
 from dataclasses_json import dataclass_json, config
 import yaml
-from functools import lru_cache
+from functools import lru_cache, partial
 from pathlib import Path
 
 DATA_DIR = Path(__file__).parent.parent.parent / "data"
@@ -22,6 +22,7 @@ BOLD_PATTERN = re.compile(BOLD_PATTERN_STRING)
 TASK_SPLIT_PATTERN = re.compile(
     f"({INGR_PATTERN_STRING}|{TIMER_PATTERN_STRING}|{BOLD_PATTERN_STRING})"
 )
+NOTE_SPLIT_PATTERN = re.compile(f"({BOLD_PATTERN_STRING})")
 INGR_LINK_PATTERN = re.compile(r"~([^~]+)~")
 
 
@@ -103,6 +104,12 @@ class IngredientGroup:
 
 @dataclass_json
 @dataclass
+class Note:
+    parts: list = field(default_factory=list)
+
+
+@dataclass_json
+@dataclass
 class Recipe:
     id: str
     name: str
@@ -111,6 +118,7 @@ class Recipe:
     ingredient_groups: list[IngredientGroup] = field(default_factory=list)
     ingredient_map: dict[str, Ingredient] = field(default_factory=dict)
     steps: list[Step] = field(default_factory=list)
+    notes: list[Note] = field(default_factory=list)
 
     def all_ingredients(self) -> Generator[Ingredient]:
         for g in self.ingredient_groups:
@@ -231,6 +239,7 @@ def load_recipe(data, recipe_id) -> Recipe:
 
     handle_ingredients(data["ingredients"], recipe)
     handle_steps(data.get("steps", []), recipe)
+    handle_notes(data.get("notes", []), recipe)
 
     return recipe
 
@@ -293,28 +302,19 @@ def handle_ingredient(ingr_line) -> Ingredient:
 
 def handle_steps(step_lines, recipe: Recipe):
 
-    def handle_special_part_match(match, step):
+    def handle_special_part(match, step):
         ingr_match = INGR_PATTERN.match(match)
         if ingr_match:
             ingr_part = handle_task_ingredient(ingr_match)
             ingr_index_in_step = add_ingredient_to_step(ingr_part, step)
             ingr_part.color_index = ingr_index_in_step % NUM_COLORS
-            task.parts.append(ingr_part)
-            return
+            return ingr_part
 
         timer_match = TIMER_PATTERN.match(match)
         if timer_match:
-            task.parts.append(handle_task_timer(timer_match))
-            return
+            return handle_task_timer(timer_match)
 
-        bold_match = BOLD_PATTERN.match(match)
-        if bold_match:
-            task.parts.append(
-                TextPart(
-                    text=bold_match.group(1),
-                    style="bold",
-                )
-            )
+        return handle_formatted_text_part(match)
 
     def handle_task_ingredient(m):
         ingr_name = m.group(1)
@@ -358,21 +358,57 @@ def handle_steps(step_lines, recipe: Recipe):
         step = Step(title=step_line.get("title", ""))
         recipe.steps.append(step)
         for task_line in step_line["tasks"]:
-            task = Task()
-
-            k = 0
-            for m in re.finditer(TASK_SPLIT_PATTERN, task_line):
-                if m.start() > k:
-                    task.parts.append(TextPart(text=task_line[k : m.start()]))
-
-                handle_special_part_match(m.group(), step)
-
-                k = m.end()
-
-            if k < len(task_line) - 1:
-                task.parts.append(TextPart(text=task_line[k:]))
+            task = Task(
+                parts=handle_parts(
+                    task_line,
+                    TASK_SPLIT_PATTERN,
+                    partial(handle_special_part, step=step),
+                )
+            )
 
             step.tasks.append(task)
+
+
+def handle_notes(note_lines: list[str], recipe: Recipe):
+    recipe.notes = [
+        Note(
+            parts=handle_parts(
+                line,
+                NOTE_SPLIT_PATTERN,
+                handle_formatted_text_part,
+            )
+        )
+        for line in note_lines
+    ]
+
+
+def handle_parts(line: str, special_part_pattern, handle_special_part):
+    parts = []
+    k = 0
+    for m in re.finditer(special_part_pattern, line):
+        if m.start() > k:
+            parts.append(TextPart(text=line[k : m.start()]))
+
+        special_part = handle_special_part(m.group())
+        if special_part:
+            parts.append(special_part)
+
+        k = m.end()
+
+    if k < len(line) - 1:
+        parts.append(TextPart(text=line[k:]))
+
+    return parts
+
+
+def handle_formatted_text_part(match):
+    bold_match = BOLD_PATTERN.match(match)
+    if bold_match:
+        return TextPart(
+            text=bold_match.group(1),
+            style="bold",
+        )
+    return None
 
 
 def clean_ingr_name(ingr_name):
