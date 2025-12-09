@@ -63,6 +63,14 @@ To see where the ingredients comes from:
 .\cli.ps1 update-shopping-links --origins
 ```
 
+#### Update shopping links
+
+```shell
+.\cli.ps1 generate-static generated/
+```
+
+Generates a static version of all the Onyo pages based on the `data` folder. These pages don't support edit operations obviously.
+
 ## Development
 
 Uses a simple Python backend with Jinja for html templating.

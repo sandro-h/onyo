@@ -4,6 +4,7 @@ venv/
 backend.log
 backend_err.log
 backend.pid
+generated/
 
 # TimerLauncher
 *.iml
