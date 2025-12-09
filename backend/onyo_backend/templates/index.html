@@ -42,8 +42,8 @@
     <script type="text/javascript">
         function main() {
             initSearch();
-            const createRecipeBtn = document.getElementById('create-recipe-btn');
-            createRecipeBtn.addEventListener('click', createRecipe);
+            const addRecipeBtn = document.getElementById('add-recipe-btn');
+            addRecipeBtn.addEventListener('click', addRecipe);
         }
 
         function initSearch() {
@@ -88,12 +88,12 @@
             e.classList.remove('hidden');
         }
 
-        function createRecipe() {
+        function addRecipe() {
             const name = prompt("Recipe name");
             if (!name) {
                 return;
             }
-            document.getElementById('create-recipe-name').value = name;
+            document.getElementById('add-recipe-name').value = name;
             document.getElementById('form').submit();
         }
 
@@ -120,9 +120,9 @@
                 {% endfor %}
                 <li><a class="link-btn special-btn" href="/onyo/ideas">💡 Ideas</a></li>
                 {% if 'recipe_editor' in user.roles %}
-                <form id="form" method="POST" action="/onyo/recipes/create">
-                    <li><a id="create-recipe-btn" class="link-btn special-btn" href="#">New recipe</a></li>
-                    <input id="create-recipe-name" name="name" type="hidden" />
+                <form id="form" method="POST" action="/onyo/recipes">
+                    <li><a id="add-recipe-btn" class="link-btn special-btn" href="#">New recipe</a></li>
+                    <input id="add-recipe-name" name="name" type="hidden" />
                 </form>
                 {% endif %}
             </ul>

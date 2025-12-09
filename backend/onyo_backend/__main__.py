@@ -58,7 +58,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
             r"/onyo/ideas": self.add_idea,
             r"/onyo/ideas/([^/]+)": self.delete_idea,
             r"/onyo/recipes/([^/]+)/edit": self.edit_recipe,
-            r"/onyo/recipes/create": self.create_recipe,
+            r"/onyo/recipes": self.add_recipe,
         }
 
         super().__init__(*args, directory=Path(__file__).parent, **kwargs)
@@ -159,7 +159,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         # redirect to avoid repost on refresh
         self.redirect(recipe_link(recipe_id))
 
-    def create_recipe(self):
+    def add_recipe(self):
         if not self.check_role(RECIPE_EDITOR):
             return
 
