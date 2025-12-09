@@ -107,13 +107,20 @@ def load_recipe(path) -> Recipe:
         icon=data.get("icon", ""),
     )
 
+    handle_ingredients(data["ingredients"], recipe)
+    handle_steps(data.get("steps", []), recipe)
+
+    return recipe
+
+
+def handle_ingredients(ingredient_lines, recipe: Recipe):
     def handle_ingr_name(m):
         ingr = recipe.ingredients[-1]
         ingr.name = m.group(1)
         return ingr.name
 
     last_line = None
-    for ingr_line in data["ingredients"]:
+    for ingr_line in ingredient_lines:
         if ingr_line == ")":
             recipe.ingredients[-1].mise = Mise.END
         elif ingr_line != "(":
@@ -125,6 +132,8 @@ def load_recipe(path) -> Recipe:
 
         last_line = ingr_line
 
+
+def handle_steps(step_lines, recipe: Recipe):
     ingr_indexes = {}
 
     def handle_task_ingr_name(m):
@@ -161,15 +170,13 @@ def load_recipe(path) -> Recipe:
         seconds = math.floor(factors[unit] * amount)
         return f'<span class="timer"><a href="launchtimer://?seconds={seconds}&title={recipe.name}">{full}</a></span>'
 
-    for step_data in data.get("steps", []):
+    for step_line in step_lines:
         step = Step()
         recipe.steps.append(step)
-        for task_line in step_data["tasks"]:
+        for task_line in step_line["tasks"]:
             clean_task = re.sub(r"@([^@]+)@", handle_task_ingr_name, task_line)
             clean_task = re.sub(
                 r"!(([^!]+) *(second|minute|hour)s?)!", handle_timer, clean_task
             )
             clean_task = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", clean_task)
             step.tasks.append(clean_task)
-
-    return recipe

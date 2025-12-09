@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <title>{{ recipe.name }} - Onyo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/x-icon" href="/static/logo192.png">
@@ -208,12 +209,14 @@
 <body>
     <main>
         <h1><a href="{{back_link}}">&#9001; {{ recipe.name }}</a></h1>
+
         <nav>
             <div class="switcher selected" data-tab="0">Ingr</div>
             {% for step in recipe.steps %}
             <div class="switcher" data-tab="{{loop.index}}">{{loop.index}}</div>
             {% endfor %}
         </nav>
+
         <div class="tab visible ingredients">
             <ul>
                 {% for ingr in recipe.ingredients %}

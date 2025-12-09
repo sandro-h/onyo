@@ -2,23 +2,12 @@
 <html lang="en">
 
 <head>
+    <title>{{ category.name }} - Onyo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/x-icon" href="/static/logo192.png">
     <link rel="stylesheet" href="/static/style.css">
     <style type="text/css">
-        ul {
-            padding-left: 1em;
-        }
-
-        li {
-            list-style-type: none;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
         nav {
             display: flex;
             flex-direction: row;
@@ -31,6 +20,18 @@
 
         section {
             text-align: center;
+        }
+
+        ul {
+            padding-left: 1em;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         .icon-l {
@@ -48,40 +49,42 @@
         }
     </style>
     <script type="text/javascript">
-        let lastPick = -1;
-
         function main() {
-            document.getElementById('random-btn').addEventListener('click', _ => pickRandom());
-            document.getElementById('all-btn').addEventListener('click', _ => showAll());
-        }
-
-        function pickRandom() {
+            let lastPick = -1;
+            const randomBtn = document.getElementById('random-btn');
+            const allBtn = document.getElementById('all-btn');
             const meals = document.querySelectorAll('section li');
 
-            let pick = -1;
-            do {
-                pick = Math.floor(Math.random() * meals.length);
-            } while (pick == lastPick || meals.length == 1);
-            lastPick = pick;
+            randomBtn.addEventListener('click', pickRandom);
+            allBtn.addEventListener('click', showAll);
 
-            document.getElementById('all-btn').classList.remove('hidden');
+            function pickRandom() {
+                lastPick = randomIndex(meals.length, lastPick);
+                meals.forEach((m, i) => i === lastPick ? show(m) : hide(m));
+                show(allBtn);
+            }
 
-            meals.forEach((m, i) => {
-                if (i !== pick) {
-                    m.classList.add('hidden');
-                }
-                else {
-                    m.classList.remove('hidden');
-                }
-            })
+            function showAll() {
+                meals.forEach(show);
+                hide(allBtn);
+            }
         }
 
-        function showAll() {
-            const meals = document.querySelectorAll('section li');
-            meals.forEach((m, i) => {
-                m.classList.remove('hidden');
-            })
-            document.getElementById('all-btn').classList.add('hidden');
+        function randomIndex(count, last) {
+            for (; ;) {
+                const pick = Math.floor(Math.random() * count);
+                if (pick !== last || count === 1) {
+                    return pick;
+                }
+            }
+        }
+
+        function show(e) {
+            e.classList.remove('hidden');
+        }
+
+        function hide(e) {
+            e.classList.add('hidden');
         }
 
         document.addEventListener('DOMContentLoaded', main);

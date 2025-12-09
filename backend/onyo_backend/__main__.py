@@ -58,18 +58,30 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def render_categories(self):
         categories = list_recipes()
-        return self.reply_template("index.html", categories=categories)
+        self.reply_template("index.html", categories=categories)
 
     def render_recipe_list(self, category_name):
         categories = list_recipes()
-        category = categories[category_name.lower()]
-        return self.reply_template("recipe_list.html", category=category)
+        category = categories.get(category_name.lower())
+        if not category:
+            self._reply(404, f"No category {category_name}")
+            return
+
+        self.reply_template("recipe_list.html", category=category)
 
     def render_recipe(self, category_name, recipe_id):
         categories = list_recipes()
-        category = categories[category_name.lower()]
+        category = categories.get(category_name.lower())
+        if not category:
+            self._reply(404, f"No category {category_name}")
+            return
+
         recipe = next((r for r in category.recipes if r.id == recipe_id.lower()), None)
-        return self.reply_template(
+        if not recipe:
+            self._reply(404, f"No recipe {recipe_id}")
+            return
+
+        self.reply_template(
             "recipe.html",
             recipe=recipe,
             Mise=Mise,
@@ -80,24 +92,6 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
     def reply_template(self, template_file, **kw_args):
         template = self.template_env.get_template(template_file)
         self._reply(200, template.render(kw_args), "text/html")
-
-    # def reply_static_file(self, file_name):
-    #     path = Path("static") / file_name
-    #     if not path.exists():
-    #         self._reply(404, "Not found")
-    #         return
-
-    #     with open(path, "rb") as file:
-    #         self.send_response(200)
-    #         self.send_header("Content-type", content_type)
-    #         self.end_headers()
-    #         self.wfile.write(file.read())
-
-    # def guess_content_type(self, file):
-    #     mappings =
-    #     ext = file.split(".")[-1]
-    #     if file.endswith(".json"):
-    #         return "application/json"
 
     def _reply(self, status, body, content_type=None):
         self.send_response(status)
