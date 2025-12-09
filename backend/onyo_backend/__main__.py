@@ -128,7 +128,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         )
 
     def edit_recipe(self, recipe_id):
-        if not self.is_authorized(RECIPE_EDITOR):
+        if not self.check_role(RECIPE_EDITOR):
             return
 
         if not self.lookup_recipe(recipe_id):
@@ -170,7 +170,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         )
 
     def add_idea(self):
-        if not self.is_authorized(IDEA_EDITOR):
+        if not self.check_role(IDEA_EDITOR):
             return
 
         body_data = self.get_body_text()
@@ -183,7 +183,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.redirect("/onyo/ideas")
 
     def delete_idea(self, idea_guid):
-        if not self.is_authorized(IDEA_EDITOR):
+        if not self.check_role(IDEA_EDITOR):
             return
 
         body_data = self.get_body_text()
@@ -200,7 +200,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         content_length = int(self.headers["Content-Length"])
         return bytes.decode(self.rfile.read(content_length))
 
-    def is_authorized(self, required_role):
+    def check_role(self, required_role):
         user = self.get_authenticated_user()
 
         if not user:
