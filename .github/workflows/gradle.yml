@@ -24,3 +24,6 @@ jobs:
     steps:
       - name: bla
         run: which sh
+
+      - name: bla
+        run: sh --version
