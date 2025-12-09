@@ -195,20 +195,20 @@
             <ul>
                 {% set mise_index = namespace(value=0) %}
                 {% for ingr in recipe.ingredients %}
-                {% if ingr.mise == Mise.START %}
-                <div class="mise col{{mise_index.value % NUM_COLORS}}">
-                    {% set mise_index.value = mise_index.value + 1 %}
+                    {% if ingr.mise == Mise.START %}
+                        <div class="mise col{{mise_index.value % NUM_COLORS}}">
+                        {% set mise_index.value = mise_index.value + 1 %}
                     {% endif %}
                     <li>
-                        {% if ingr.link_id %}
-                        <a href="/recipes/{{ ingr.link_id }}">{{ ingr.text }}</a>
+                        {% if ingr.linked_recipe_id %}
+                            <a href="/recipes/{{ ingr.linked_recipe_id }}">{{ ingr.text }}</a>
                         {%else %}
-                        {{ ingr.text }}
+                            {{ ingr.text }}
                         {% endif %}
                     </li>
                     {% if ingr.mise == Mise.END %}
-                </div>
-                {% endif %}
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </ul>
         </div>

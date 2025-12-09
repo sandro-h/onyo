@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 import re
 import http.server
-from urllib.parse import urlparse
 from .recipes import NUM_COLORS, Mise
 from onyo_backend.recipes import list_recipes
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -55,7 +54,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
 
                 return route()
 
-        self._reply(404, "Not found")
+        return self._reply(404, "Not found")
 
     def render_categories(self):
         categories, _ = list_recipes()

@@ -1,8 +1,8 @@
-from collections import defaultdict
 from dataclasses import dataclass, field
-from enum import Enum, auto
+from enum import StrEnum, auto
 import math
 import re
+from dataclasses_json import dataclass_json, config
 import yaml
 from functools import lru_cache
 from pathlib import Path
@@ -21,31 +21,41 @@ TASK_SPLIT_PATTERN = re.compile(
 INGR_LINK_PATTERN = re.compile(r"~([^~]+)~")
 
 
-class Mise(Enum):
+class Mise(StrEnum):
     NONE = auto()
     START = auto()
     END = auto()
 
 
+@dataclass_json
 @dataclass
 class Ingredient:
     name: str = ""
     text: str = ""
-    mise: Mise = Mise.NONE
-    link_id: str = ""
+    mise: Mise = field(
+        default=Mise.NONE,
+        metadata=config(
+            encoder=str,
+            decoder=Mise,
+        ),
+    )
+    linked_recipe_id: str = ""
 
 
+@dataclass_json
 @dataclass
 class Timer:
     title: str
     seconds: int
 
 
+@dataclass_json
 @dataclass
 class Task:
     parts: list = field(default_factory=list)
 
 
+@dataclass_json
 @dataclass
 class Step:
     tasks: list[Task] = field(default_factory=list)
@@ -53,6 +63,7 @@ class Step:
     timers: list[Timer] = field(default_factory=list)
 
 
+@dataclass_json
 @dataclass
 class TextPart:
     text: str
@@ -60,6 +71,7 @@ class TextPart:
     type: str = "text"
 
 
+@dataclass_json
 @dataclass
 class IngredientPart:
     name: str
@@ -68,6 +80,7 @@ class IngredientPart:
     type: str = "ingredient"
 
 
+@dataclass_json
 @dataclass
 class TimerPart:
     text: str
@@ -75,6 +88,7 @@ class TimerPart:
     type: str = "timer"
 
 
+@dataclass_json
 @dataclass
 class Recipe:
     id: str
@@ -86,6 +100,7 @@ class Recipe:
     steps: list[Step] = field(default_factory=list)
 
 
+@dataclass_json
 @dataclass
 class Category:
     name: str
@@ -109,14 +124,17 @@ def list_recipe_files(recipe_dir):
 
 
 @lru_cache(maxsize=1)
-def load_recipes(recipe_dir, lmod) -> dict[str, Category]:
+def load_recipes(
+    recipe_dir,
+    lmod,  # pylint: disable=unused-argument
+) -> dict[str, Category]:
     print("Reloading recipes")
     categories = {}
     recipes = {}
     for r in list_recipe_files(recipe_dir):
         try:
-            recipe = load_recipe(r)
-        except Exception as e:
+            recipe = load_recipe_from_file(r)
+        except Exception as e:  # pylint: disable=broad-exception-caught
             print(f"Error loading {r}: {e}")
             continue
 
@@ -137,20 +155,29 @@ def load_recipes(recipe_dir, lmod) -> dict[str, Category]:
 def resolve_links(recipes: dict[str, Recipe]):
     for r in recipes.values():
         for i in r.ingredients:
-            if not i.link_id:
+            if not i.linked_recipe_id:
                 continue
 
-            linked_recipe = recipes.get(i.link_id)
+            linked_recipe = recipes.get(i.linked_recipe_id)
             if not linked_recipe:
-                print(f"WARN: Ingredient link {i.link_id} in {r.id} is not valid")
+                print(
+                    f"WARN: Ingredient link {i.linked_recipe_id} in {r.id} is not valid"
+                )
 
             i.text = linked_recipe.name
 
 
-def load_recipe(path) -> Recipe:
+def load_recipe_from_file(path) -> Recipe:
     with open(path, "r", encoding="utf8") as file:
         data = yaml.safe_load(file)
 
+    return load_recipe(
+        data,
+        path.name.replace(".yaml", "").lower(),
+    )
+
+
+def load_recipe(data, recipe_id) -> Recipe:
     raw_categories = data["category"]
     if isinstance(raw_categories, str):
         categories = {raw_categories}
@@ -158,7 +185,7 @@ def load_recipe(path) -> Recipe:
         categories = set(raw_categories)
 
     recipe = Recipe(
-        id=path.name.replace(".yaml", "").lower(),
+        id=recipe_id,
         name=data["name"],
         categories=categories,
         icon=data.get("icon", ""),
@@ -203,7 +230,7 @@ def handle_ingredient(ingr_line) -> Ingredient:
     return Ingredient(
         name=name,
         text=text,
-        link_id=link_id,
+        linked_recipe_id=link_id,
     )
 
 
@@ -307,5 +334,5 @@ def sub_and_keep_match(pattern, repl_func, line):
     return replaced, match
 
 
-def index_of(list, predicate):
-    return next((i for i, e in enumerate(list) if predicate(e)), -1)
+def index_of(lst, predicate):
+    return next((i for i, e in enumerate(lst) if predicate(e)), -1)

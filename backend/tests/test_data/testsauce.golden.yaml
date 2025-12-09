@@ -1,0 +1,283 @@
+input:
+  name: Enchilada Sauce
+  icon: 🌯
+  category: Sauces
+  ingredients:
+  - 3 tsbp olive $oil$
+  - 3 tbsp $flour$
+  - (
+  - 1 tbsp $chili powder$
+  - 1 tsp $cumin$
+  - 1/2 tsb $garlic powder$
+  - 1/4 tsp $oregano$
+  - 1/4 tsp $salt$
+  - )
+  - 2 tbsp $tomato paste$
+  - 2 cups vegetable/chicken $broth$
+  - 1 tsp apple cider $vinegar$
+  steps:
+  - tasks:
+    - Mix $chili powder$, $cumin$, $garlic powder$ ,$oregano$, $salt$
+  - tasks:
+    - Warm $oil$ until hot enough that a light sprinkle of the flour/spice mixture
+      sizzles on contact
+    - Pour $flour$ and spices. While whisking constantly, cook until fragrant and
+      slightly deepened in color, about 1 minute.
+    - Whisk the $tomato paste$ into the mixture, then slowly pour in the $broth$ while
+      whisking constantly to remove any lumps.
+  - tasks:
+    - Raise heat to medium-high and bring the mixture to a simmer, then reduce heat
+      as necessary to maintain a gentle simmer. Cook, whisking often, for about 5
+      to 7 minutes, until the sauce has thickened a bit and a spoon encounters some
+      resistance as you stir it.
+  - tasks:
+    - Remove from heat, then whisk in the $vinegar$ and season to taste with a generous
+      amount of freshly ground black pepper.
+output:
+  id: testrecipe
+  name: Enchilada Sauce
+  categories:
+  - Sauces
+  icon: 🌯
+  ingredients:
+  - name: oil
+    text: 3 tsbp olive oil
+    mise: none
+    linked_recipe_id:
+  - name: flour
+    text: 3 tbsp flour
+    mise: none
+    linked_recipe_id:
+  - name: chili powder
+    text: 1 tbsp chili powder
+    mise: start
+    linked_recipe_id:
+  - name: cumin
+    text: 1 tsp cumin
+    mise: none
+    linked_recipe_id:
+  - name: garlic powder
+    text: 1/2 tsb garlic powder
+    mise: none
+    linked_recipe_id:
+  - name: oregano
+    text: 1/4 tsp oregano
+    mise: none
+    linked_recipe_id:
+  - name: salt
+    text: 1/4 tsp salt
+    mise: end
+    linked_recipe_id:
+  - name: tomato paste
+    text: 2 tbsp tomato paste
+    mise: none
+    linked_recipe_id:
+  - name: broth
+    text: 2 cups vegetable/chicken broth
+    mise: none
+    linked_recipe_id:
+  - name: vinegar
+    text: 1 tsp apple cider vinegar
+    mise: none
+    linked_recipe_id:
+  ingredient_map:
+    oil:
+      name: oil
+      text: 3 tsbp olive oil
+      mise: none
+      linked_recipe_id:
+    flour:
+      name: flour
+      text: 3 tbsp flour
+      mise: none
+      linked_recipe_id:
+    chili powder:
+      name: chili powder
+      text: 1 tbsp chili powder
+      mise: start
+      linked_recipe_id:
+    cumin:
+      name: cumin
+      text: 1 tsp cumin
+      mise: none
+      linked_recipe_id:
+    garlic powder:
+      name: garlic powder
+      text: 1/2 tsb garlic powder
+      mise: none
+      linked_recipe_id:
+    oregano:
+      name: oregano
+      text: 1/4 tsp oregano
+      mise: none
+      linked_recipe_id:
+    salt:
+      name: salt
+      text: 1/4 tsp salt
+      mise: end
+      linked_recipe_id:
+    tomato paste:
+      name: tomato paste
+      text: 2 tbsp tomato paste
+      mise: none
+      linked_recipe_id:
+    broth:
+      name: broth
+      text: 2 cups vegetable/chicken broth
+      mise: none
+      linked_recipe_id:
+    vinegar:
+      name: vinegar
+      text: 1 tsp apple cider vinegar
+      mise: none
+      linked_recipe_id:
+  steps:
+  - tasks:
+    - parts:
+      - text: 'Mix '
+        style: ''
+        type: text
+      - name: chili powder
+        text: chili powder
+        color_index: 0
+        type: ingredient
+      - text: ', '
+        style: ''
+        type: text
+      - name: cumin
+        text: cumin
+        color_index: 1
+        type: ingredient
+      - text: ', '
+        style: ''
+        type: text
+      - name: garlic powder
+        text: garlic powder
+        color_index: 2
+        type: ingredient
+      - text: ' ,'
+        style: ''
+        type: text
+      - name: oregano
+        text: oregano
+        color_index: 3
+        type: ingredient
+      - text: ', '
+        style: ''
+        type: text
+      - name: salt
+        text: salt
+        color_index: 4
+        type: ingredient
+    ingredients:
+    - name: chili powder
+      text: 1 tbsp chili powder
+      mise: start
+      linked_recipe_id:
+    - name: cumin
+      text: 1 tsp cumin
+      mise: none
+      linked_recipe_id:
+    - name: garlic powder
+      text: 1/2 tsb garlic powder
+      mise: none
+      linked_recipe_id:
+    - name: oregano
+      text: 1/4 tsp oregano
+      mise: none
+      linked_recipe_id:
+    - name: salt
+      text: 1/4 tsp salt
+      mise: end
+      linked_recipe_id:
+    timers: []
+  - tasks:
+    - parts:
+      - text: 'Warm '
+        style: ''
+        type: text
+      - name: oil
+        text: oil
+        color_index: 0
+        type: ingredient
+      - text: ' until hot enough that a light sprinkle of the flour/spice mixture
+          sizzles on contact'
+        style: ''
+        type: text
+    - parts:
+      - text: 'Pour '
+        style: ''
+        type: text
+      - name: flour
+        text: flour
+        color_index: 1
+        type: ingredient
+      - text: ' and spices. While whisking constantly, cook until fragrant and slightly
+          deepened in color, about 1 minute.'
+        style: ''
+        type: text
+    - parts:
+      - text: 'Whisk the '
+        style: ''
+        type: text
+      - name: tomato paste
+        text: tomato paste
+        color_index: 2
+        type: ingredient
+      - text: ' into the mixture, then slowly pour in the '
+        style: ''
+        type: text
+      - name: broth
+        text: broth
+        color_index: 3
+        type: ingredient
+      - text: ' while whisking constantly to remove any lumps.'
+        style: ''
+        type: text
+    ingredients:
+    - name: oil
+      text: 3 tsbp olive oil
+      mise: none
+      linked_recipe_id:
+    - name: flour
+      text: 3 tbsp flour
+      mise: none
+      linked_recipe_id:
+    - name: tomato paste
+      text: 2 tbsp tomato paste
+      mise: none
+      linked_recipe_id:
+    - name: broth
+      text: 2 cups vegetable/chicken broth
+      mise: none
+      linked_recipe_id:
+    timers: []
+  - tasks:
+    - parts:
+      - text: Raise heat to medium-high and bring the mixture to a simmer, then reduce
+          heat as necessary to maintain a gentle simmer. Cook, whisking often, for
+          about 5 to 7 minutes, until the sauce has thickened a bit and a spoon encounters
+          some resistance as you stir it.
+        style: ''
+        type: text
+    ingredients: []
+    timers: []
+  - tasks:
+    - parts:
+      - text: 'Remove from heat, then whisk in the '
+        style: ''
+        type: text
+      - name: vinegar
+        text: vinegar
+        color_index: 0
+        type: ingredient
+      - text: ' and season to taste with a generous amount of freshly ground black
+          pepper.'
+        style: ''
+        type: text
+    ingredients:
+    - name: vinegar
+      text: 1 tsp apple cider vinegar
+      mise: none
+      linked_recipe_id:
+    timers: []

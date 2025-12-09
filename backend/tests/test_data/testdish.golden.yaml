@@ -1,0 +1,212 @@
+input:
+  name: Enchiladas
+  icon: 🌯
+  category: Meal
+  ingredients:
+  - Diced $chicken$
+  - 1 white $onion$, diced
+  - 1 $bell pepper$, diced
+  - A few jarred charred peppers (optional)
+  - 1 can of $black beans$
+  - ~enchiladasauce~
+  - 3/4 block of $cheddar$
+  - 6 big $tortillas$
+  steps:
+  - tasks:
+    - Preheat oven to 175°C (top/bottom)
+    - Rewarm enchilada sauce in pan
+    - Season $chicken$ with salt and peper, fry up.
+    - Remove chicken to a bowl/plate
+  - tasks:
+    - In same pan, sauté $onion$s, $bell pepper$ until soft
+    - Rinse out $black beans$, add to pan, cook for a minute.
+    - Add chicken back into pan
+    - Take pan off heat
+  - tasks:
+    - 'Build enchiladas: spread some sauce on tortilla, add veggie/bean/chicken mix,
+      add grated cheese'
+    - Fold tortilla and place into oiled backing dish
+    - Spread remaining sauce on top of tortillas, add remaining cheddar cheese on
+      top
+  - tasks:
+    - Bake enchiladas in oven for !20 minutes!
+output:
+  id: testrecipe
+  name: Enchiladas
+  categories:
+  - Meal
+  icon: 🌯
+  ingredients:
+  - name: chicken
+    text: Diced chicken
+    mise: none
+    linked_recipe_id:
+  - name: onion
+    text: 1 white onion, diced
+    mise: none
+    linked_recipe_id:
+  - name: bell pepper
+    text: 1 bell pepper, diced
+    mise: none
+    linked_recipe_id:
+  - name:
+    text: A few jarred charred peppers (optional)
+    mise: none
+    linked_recipe_id:
+  - name: black beans
+    text: 1 can of black beans
+    mise: none
+    linked_recipe_id:
+  - name:
+    text: enchiladasauce
+    mise: none
+    linked_recipe_id: enchiladasauce
+  - name: cheddar
+    text: 3/4 block of cheddar
+    mise: none
+    linked_recipe_id:
+  - name: tortillas
+    text: 6 big tortillas
+    mise: none
+    linked_recipe_id:
+  ingredient_map:
+    chicken:
+      name: chicken
+      text: Diced chicken
+      mise: none
+      linked_recipe_id:
+    onion:
+      name: onion
+      text: 1 white onion, diced
+      mise: none
+      linked_recipe_id:
+    bell pepper:
+      name: bell pepper
+      text: 1 bell pepper, diced
+      mise: none
+      linked_recipe_id:
+    black beans:
+      name: black beans
+      text: 1 can of black beans
+      mise: none
+      linked_recipe_id:
+    cheddar:
+      name: cheddar
+      text: 3/4 block of cheddar
+      mise: none
+      linked_recipe_id:
+    tortillas:
+      name: tortillas
+      text: 6 big tortillas
+      mise: none
+      linked_recipe_id:
+  steps:
+  - tasks:
+    - parts:
+      - text: Preheat oven to 175°C (top/bottom)
+        style: ''
+        type: text
+    - parts:
+      - text: Rewarm enchilada sauce in pan
+        style: ''
+        type: text
+    - parts:
+      - text: 'Season '
+        style: ''
+        type: text
+      - name: chicken
+        text: chicken
+        color_index: 0
+        type: ingredient
+      - text: ' with salt and peper, fry up.'
+        style: ''
+        type: text
+    - parts:
+      - text: Remove chicken to a bowl/plate
+        style: ''
+        type: text
+    ingredients:
+    - name: chicken
+      text: Diced chicken
+      mise: none
+      linked_recipe_id:
+    timers: []
+  - tasks:
+    - parts:
+      - text: 'In same pan, sauté '
+        style: ''
+        type: text
+      - name: onion
+        text: onion
+        color_index: 0
+        type: ingredient
+      - text: 's, '
+        style: ''
+        type: text
+      - name: bell pepper
+        text: bell pepper
+        color_index: 1
+        type: ingredient
+      - text: ' until soft'
+        style: ''
+        type: text
+    - parts:
+      - text: 'Rinse out '
+        style: ''
+        type: text
+      - name: black beans
+        text: black beans
+        color_index: 2
+        type: ingredient
+      - text: ', add to pan, cook for a minute.'
+        style: ''
+        type: text
+    - parts:
+      - text: Add chicken back into pan
+        style: ''
+        type: text
+    - parts:
+      - text: Take pan off heat
+        style: ''
+        type: text
+    ingredients:
+    - name: onion
+      text: 1 white onion, diced
+      mise: none
+      linked_recipe_id:
+    - name: bell pepper
+      text: 1 bell pepper, diced
+      mise: none
+      linked_recipe_id:
+    - name: black beans
+      text: 1 can of black beans
+      mise: none
+      linked_recipe_id:
+    timers: []
+  - tasks:
+    - parts:
+      - text: 'Build enchiladas: spread some sauce on tortilla, add veggie/bean/chicken
+          mix, add grated cheese'
+        style: ''
+        type: text
+    - parts:
+      - text: Fold tortilla and place into oiled backing dish
+        style: ''
+        type: text
+    - parts:
+      - text: Spread remaining sauce on top of tortillas, add remaining cheddar cheese
+          on top
+        style: ''
+        type: text
+    ingredients: []
+    timers: []
+  - tasks:
+    - parts:
+      - text: 'Bake enchiladas in oven for '
+        style: ''
+        type: text
+      - text: 20 minutes
+        seconds: 1200
+        type: timer
+    ingredients: []
+    timers: []
