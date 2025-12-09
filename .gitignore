@@ -1,7 +1,6 @@
 # Backend
 __pycache__/
 venv/
-.passphrase
 backend.log
 backend_err.log
 backend.pid

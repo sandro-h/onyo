@@ -5,18 +5,6 @@
     <title>{{ category.name }} - Onyo</title>
     {% include "_preamble.html" %}
     <style type="text/css">
-        section {
-            text-align: center;
-        }
-
-        ul {
-            padding-left: 1em;
-        }
-
-        li {
-            list-style-type: none;
-        }
-
         .icon-l {
             float: left;
             opacity: 0.6;
@@ -109,15 +97,15 @@
     <main>
         <nav>
             <h1><a href="/onyo">&#9001; {{ category.name }} <span class="detail">({{ category.recipes | length }})</span></a></h1>
-            <a id="all-btn" class="control-btn hidden" href="#">Show all</a>
-            <a id="random-btn" class="control-btn" href="#">Random</a>
+            <a id="all-btn" class="btn hidden" href="#">Show all</a>
+            <a id="random-btn" class="btn" href="#">Random</a>
         </nav>
         <section>
             <input id="search" type="search" autocomplete="off" placeholder="Search recipe. i:[name] search by ingredient"/>
             <ul>
                 {% for recipe in category.recipes %}
                 <li>
-                    <a class="link-btn recipe" href="/onyo/recipes/{{recipe.id}}" data-searchname="{{ recipe.name }}" data-searchingredients="{{ recipe.searchable_ingredients() | join('|') }}">
+                    <a class="btn recipe" href="/onyo/recipes/{{recipe.id}}" data-searchname="{{ recipe.name }}" data-searchingredients="{{ recipe.searchable_ingredients() | join('|') }}">
                         <span class="icon-l">{{recipe.icon}}</span>
                         <span>{{recipe.name}}</span>
                         <span class="icon-r">{{recipe.icon}}</span>

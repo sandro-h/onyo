@@ -4,23 +4,17 @@
 <head>
     <title>Ideas - Onyo</title>
     {% include "_preamble.html" %}
-    <style type="text/css">
-        section {
-            text-align: center;
-        }
-
-        ul {
-            padding-left: 1em;
-        }
-
-        li {
-            list-style-type: none;
-        }
-
-        input.add-btn {
+    <style type="text/css">     
+        .add-btn,
+        .add-btn:hover,
+        .add-btn:visited,
+        .add-btn:active,
+        .add-btn:focus  {
             background-color: #9a0dfa;
             color: white;
             padding: 4px;
+            margin-left: 0.5em;
+            font-size: 110%;
         }
 
         #new-form {
@@ -81,7 +75,7 @@
             {% if 'idea_editor' in user.roles %}
             <form id="new-form" method="post">
                 <input type="text" class="text-input" name="text" />
-                <input type="submit" class="add-btn" value="Add"/>
+                <input type="submit" class="btn add-btn" value="Add"/>
             </form>
             {% endif %}
             <ul>
