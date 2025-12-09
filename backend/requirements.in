@@ -4,6 +4,6 @@ PyYAML
 
 # dev
 jurigged
-pylint
+flake8
 pytest
 pytest-golden
