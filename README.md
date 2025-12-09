@@ -16,6 +16,25 @@ location /onyo {
 
 ## Writing recipes
 
+### Special syntaxes
+
+#### In ingredient list
+* `$ingredient$` - used in ingredient list and task descriptions to establish a link
+* `$ingredient:num$` - used to disambiguate the same ingredient used in different proportions / steps. For example: `$salt:1$` and `$salt:2$`
+* `~recipe_id~` - ingredient is a link to another recipe. `recipe_id` is the name of the recipe file without `.yaml`.
+* `=Title=` - add a title for the following ingredients
+* ` - (`  and `- )` - group ingredients together (prepared/cooked together). Example:
+  ```
+  - (
+  - $onions$
+  - $garlic$
+  - )
+  ```
+
+#### In tasks
+* `!10 minutes!` - timer link in task description
+* `**bold text**`
+
 ### Update shopping links
 
 ```shell
