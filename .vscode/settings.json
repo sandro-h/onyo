@@ -1,9 +1,5 @@
 {
-    "python.formatting.provider": "black",
     "[python]": {
         "editor.formatOnSave": true
-    },
-    "python.linting.pylintEnabled": true,
-    "python.linting.pylintPath": "backend\\venv\\Scripts\\pylint.exe",
-    "python.formatting.blackPath": "backend\\venv\\Scripts\\black.exe",
+    }
 }

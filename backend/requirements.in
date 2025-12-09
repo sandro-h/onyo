@@ -1,0 +1,9 @@
+dataclasses-json
+Jinja2
+PyYAML
+
+# dev
+jurigged
+pylint
+pytest
+pytest-golden

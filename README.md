@@ -42,6 +42,14 @@ make stop
 make restart
 ```
 
+Start backend manually:
+
+```shell
+cd backend
+.\venv\Scripts\Activate.ps1
+python -m onyo_backend
+```
+
 With hot reloading (may be buggy):
 
 ```shell
@@ -53,4 +61,13 @@ Tests and linting:
 ```shell
 make lint
 make test
+```
+
+Upgrade all dependencies:
+
+```shell
+cd backend
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.in
+pip freeze > requirements.txt
 ```
