@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Ideas - Onyo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/x-icon" href="/onyo/static/logo192.png">
+    <link rel="stylesheet" href="/onyo/static/style.css">
+    <link rel="manifest" href="/onyo/static/manifest.json">
+    <script src="/onyo/static/index.js"></script>
+    <style type="text/css">
+        section {
+            text-align: center;
+        }
+
+        ul {
+            padding-left: 1em;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+        .form-btn {
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 110%;
+            margin-left: 0.5em;
+            background-color: #9a0dfa;
+            color: white;
+        }
+
+        #new-form {
+            margin-top: 1em;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .text-input {
+            flex-grow: 1;
+            height: 2em;
+            border-radius: 5px;
+            border: solid 1px grey;
+        }
+
+        li {
+            margin-bottom: 1em;
+        }
+
+        .delete-btn {
+            float: right;
+            margin-right: 1em;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        a.delete-btn,
+        a.delete-btn:hover,
+        a.delete-btn:visited,
+        a.delete-btn:active,
+        a.delete-btn:focus {
+            text-decoration: none;
+            padding: 2px;
+            color: lightgray;
+            display: inline-block;
+        }
+    </style>
+    <script type="text/javascript">
+        function deleteIdea(guid) {
+            if (!confirm('Delete?')) {
+                return;
+            }
+
+            const deleteForm = document.getElementById('delete-form');
+            deleteForm.action = `/onyo/ideas/${guid}`;
+            deleteForm.submit();
+        }
+    </script>
+</head>
+
+<body>
+    <main>
+        <nav>
+            <h1><a href="/onyo">&#9001; Ideas</a></h1>
+        </nav>
+        <section>
+            <form id="new-form" method="post"> <!--class="hidden"-->
+                <input type="text" class="text-input" name="text" />
+                <input type="submit" class="form-btn" value="Add"/>
+            </form>
+            <ul>
+                {% if not ideas %}
+                <li>No ideas (Dentge)</li>
+                {% endif %}
+                {% for idea in ideas %}
+                <li>
+                    {% if idea.text.startswith('http') %}
+                        <a href="{{ idea.text | e }}">
+                    {% else %}
+                        <span>
+                    {% endif %}
+                    {{ idea.text | e }}
+                    {% if idea.text.startswith('http') %}
+                        </a>
+                    {% else %}
+                        </span>
+                    {% endif %}
+                    <a href="#" class="delete-btn" onclick="deleteIdea('{{idea.guid}}')">✕</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+    <form id="delete-form" method="post">
+        <input type="hidden" name="action" value="delete" />
+    </form>
+</body>
+
+</html>

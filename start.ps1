@@ -1,7 +1,7 @@
 Push-Location -Path backend
 try {
-    .\venv\Scripts\Activate.ps1
-    python -u -m onyo_backend *> ..\backend.log
+    $p = Start-Process -FilePath "venv\scripts\python" -ArgumentList "-u -m onyo_backend" -passthru -nonewwindow -RedirectStandardOutput ..\backend.log -RedirectStandardError ..\backend_err.log
+    echo $p.id > ..\backend.pid
 }
 finally {
     Pop-Location

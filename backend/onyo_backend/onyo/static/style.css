@@ -40,6 +40,16 @@ h1>a:focus {
     text-decoration: none;
 }
 
+nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+nav>h1 {
+    flex-grow: 1;
+}
+
 a.link-btn,
 a.link-btn:hover,
 a.link-btn:visited,
@@ -110,4 +120,8 @@ a.control-btn:focus {
 .col7 {
     color: red;
     border-color: red;
+}
+
+.hidden {
+    display: none !important;
 }

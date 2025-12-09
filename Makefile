@@ -9,3 +9,9 @@ test:
 .PHONY: start
 start:
 	powershell -ExecutionPolicy Bypass -File .\start.ps1
+
+.PHONY: stop
+stop:
+	powershell -ExecutionPolicy Bypass -File .\stop.ps1
+
+restart: stop start

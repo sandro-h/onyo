@@ -22,11 +22,8 @@
             list-style-type: none;
         }
 
-        footer {
-            margin-top: 2em;
-            text-align: right;
-            font-style: italic;
-            font-size: 75%;
+        .idea-btn {
+            background-color: #9a0dfa !important;
         }
     </style>
 </head>
@@ -39,6 +36,7 @@
                 {% for cat in categories.values()|sort(attribute='name') %}
                 <li><a class="link-btn" href="/onyo/categories/{{cat.name}}">{{cat.name}}</a></li>
                 {% endfor %}
+                <li><a class="link-btn idea-btn" href="/onyo/ideas">💡 Ideas</a></li>
             </ul>
         </section>
     </main>
