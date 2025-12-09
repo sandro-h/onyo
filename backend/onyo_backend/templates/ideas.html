@@ -88,17 +88,13 @@
                 {% endif %}
                 {% for idea in ideas %}
                 <li>
-                    {% if idea.text.startswith('http') %}
-                        <a href="{{ idea.text | e }}">
-                    {% else %}
-                        <span>
-                    {% endif %}
-                    {{ idea.text | e }}
-                    {% if idea.text.startswith('http') %}
-                        </a>
-                    {% else %}
-                        </span>
-                    {% endif %}
+                    {% for part in idea.parts %}
+                        {%if part.type == "link" %}
+                        <a href="{{ part.text | e }}">{{ part.text | e }}</a>
+                        {% else %}
+                        <span>{{ part.text | e }}</span>
+                        {% endif %}
+                    {% endfor %}
                     <a href="#" class="delete-btn" onclick="deleteIdea('{{idea.guid}}')">✕</a>
                 </li>
                 {% endfor %}

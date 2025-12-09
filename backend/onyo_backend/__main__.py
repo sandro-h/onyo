@@ -5,7 +5,7 @@ from urllib.parse import unquote_plus
 
 import yaml
 
-from .ideas import Idea, add_idea, delete_idea, list_ideas
+from .ideas import Idea, add_idea, delete_idea, list_ideas_for_html
 from .shopping_list import assemble_shopping_list, get_shopping_links
 from .recipes import NUM_COLORS, Mise, load_recipe, load_recipe_yaml, save_recipe_yaml
 from onyo_backend.recipes import list_recipes
@@ -140,7 +140,7 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         return recipe
 
     def render_ideas(self):
-        ideas = list_ideas()
+        ideas = list_ideas_for_html()
         self.reply_template("ideas.html", ideas=ideas)
 
     def add_idea(self):
