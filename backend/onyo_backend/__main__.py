@@ -1,9 +1,8 @@
-from datetime import datetime
 import os
 from pathlib import Path
 import re
 import http.server
-import time
+from .recipes import NUM_COLORS, Mise
 from onyo_backend.recipes import list_recipes
 from jinja2 import Environment, PackageLoader, select_autoescape
 import ssl
@@ -70,7 +69,12 @@ class SimpleRequestHandler(http.server.SimpleHTTPRequestHandler):
         categories = list_recipes()
         category = categories[category_name.lower()]
         recipe = next((r for r in category.recipes if r.id == recipe_id.lower()), None)
-        return self.reply_template("recipe.html", recipe=recipe)
+        return self.reply_template(
+            "recipe.html",
+            recipe=recipe,
+            Mise=Mise,
+            NUM_COLORS=NUM_COLORS,
+        )
 
     def reply_template(self, template_file, **kw_args):
         template = self.template_env.get_template(template_file)

@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from enum import Enum, auto
 import math
 import re
 import yaml
@@ -9,10 +10,17 @@ RECIPE_DIR = Path(__file__).parent.parent.parent / "recipes"
 NUM_COLORS = 8
 
 
+class Mise(Enum):
+    NONE = auto()
+    START = auto()
+    END = auto()
+
+
 @dataclass
 class Ingredient:
     name: str = ""
     text: str = ""
+    mise: Mise = Mise.NONE
 
 
 @dataclass
@@ -24,7 +32,7 @@ class Timer:
 @dataclass
 class Step:
     tasks: list[str] = field(default_factory=list)
-    ingredients: list[str] = field(default_factory=list)
+    ingredients: list[Ingredient] = field(default_factory=list)
     timers: list[Timer] = field(default_factory=list)
 
 
@@ -97,12 +105,18 @@ def load_recipe(path) -> Recipe:
         ingr.name = m.group(1)
         return ingr.name
 
+    last_line = None
     for ingr_line in data["ingredients"]:
-        ingr = Ingredient()
-        recipe.ingredients.append(ingr)
-        ingr.text = re.sub(r"@([^@]+)@", handle_ingr_name, ingr_line)
-        if ingr.name:
-            recipe.ingredient_map[ingr.name] = ingr
+        if ingr_line == ")":
+            recipe.ingredients[-1].mise = Mise.END
+        elif ingr_line != "(":
+            ingr = Ingredient(mise=Mise.START if last_line == "(" else Mise.NONE)
+            recipe.ingredients.append(ingr)
+            ingr.text = re.sub(r"@([^@]+)@", handle_ingr_name, ingr_line)
+            if ingr.name:
+                recipe.ingredient_map[ingr.name] = ingr
+
+        last_line = ingr_line
 
     ingr_indexes = {}
 
@@ -111,19 +125,21 @@ def load_recipe(path) -> Recipe:
 
         ingr_name = m.group(1)
         seen = ingr_name in ingr_indexes
-        ingr_index = ingr_indexes.get(ingr_name, len(step.ingredients) + 1)
+        ingr_index = ingr_indexes.get(ingr_name, len(step.ingredients))
         ingr_indexes[ingr_name] = ingr_index
-        ingr = recipe.ingredient_map.get(ingr_name)
-        ingr_text = ingr.text if ingr else ingr_name
-
-        def ingr_span(text):
-            wrapped_index = (ingr_index - 1) % NUM_COLORS + 1
-            return f'<span class="ingr{wrapped_index}">{text}</span>'
+        color_index = ingr_index % NUM_COLORS
+        ingr = recipe.ingredient_map.get(
+            ingr_name,
+            Ingredient(
+                name=ingr_name,
+                text=ingr_name,
+            ),
+        )
 
         if not seen:
-            step.ingredients.append(ingr_span(ingr_text))
+            step.ingredients.append(ingr)
 
-        return ingr_span(ingr_name)
+        return f'<span class="ingr{color_index}">{ingr_name}</span>'
 
     def handle_timer(m):
         factors = {

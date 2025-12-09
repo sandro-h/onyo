@@ -49,6 +49,10 @@
             padding-bottom: 0.5em;
         }
 
+        .ingredients li {
+            list-style-position: inside;
+        }
+
         /* to put ingredients at bottom of screen */
         /* section {
              flex: 1; 
@@ -72,43 +76,60 @@
             text-decoration: none;
         }
 
-        .ingr1 {
+        .step_ingredients {
+            display: inline-block;
+            line-height: 1.2em;
+        }
+
+        .mise {
+            border-left: solid 2px gray;
+            border-radius: 0.5em;
+            display: inline-block;
+            padding-left: 0.5em;
+        }
+
+        .ingredients .mise {
+            padding-left: 0.5em;
+            margin-left: calc(-0.5em - 2px);
+            display: block;
+        }
+
+        .ingr0 {
             color: green;
             font-weight: bold;
         }
 
-
-        .ingr2 {
+        .ingr1 {
             color: brown;
             font-weight: bold;
         }
 
-        .ingr3 {
+        .ingr2 {
             color: lightskyblue;
             font-weight: bold;
         }
 
-        .ingr4 {
+        .ingr3 {
             color: orange;
             font-weight: bold;
         }
 
-        .ingr5 {
+        .ingr4 {
             color: magenta;
             font-weight: bold;
         }
 
-        .ingr6 {
+        .ingr5 {
             color: pink;
             font-weight: bold;
         }
 
-        .ingr7 {
+        .ingr6 {
             color: blue;
             font-weight: bold;
         }
 
-        .ingr8 {
+        .ingr7 {
             color: red;
             font-weight: bold;
         }
@@ -193,10 +214,16 @@
             <div class="switcher" data-tab="{{loop.index}}">{{loop.index}}</div>
             {% endfor %}
         </nav>
-        <div class="tab visible">
+        <div class="tab visible ingredients">
             <ul>
                 {% for ingr in recipe.ingredients %}
-                <li>{{ ingr.text }}</li>
+                {% if ingr.mise == Mise.START %}
+                <div class="mise">
+                    {% endif %}
+                    <li>{{ ingr.text }}</li>
+                    {% if ingr.mise == Mise.END %}
+                </div>
+                {% endif %}
                 {% endfor %}
             </ul>
         </div>
@@ -214,7 +241,14 @@
             <footer>
                 <div class="step_ingredients">
                     {% for ingr in step.ingredients %}
-                    <br>{{ ingr|safe }}
+                    <br />
+                    {% if ingr.mise == Mise.START %}
+                    <div class="mise">
+                        {% endif %}
+                        <span class="ingr{{loop.index0 % NUM_COLORS}}">{{ ingr.text }}</span>
+                        {% if ingr.mise == Mise.END %}
+                    </div>
+                    {% endif %}
                     {% endfor %}
                 </div>
             </footer>
