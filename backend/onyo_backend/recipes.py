@@ -6,6 +6,7 @@ from functools import lru_cache
 from pathlib import Path
 
 RECIPE_DIR = Path(__file__).parent.parent.parent / "recipes"
+NUM_COLORS = 8
 
 
 @dataclass
@@ -116,7 +117,8 @@ def load_recipe(path) -> Recipe:
         ingr_text = ingr.text if ingr else ingr_name
 
         def ingr_span(text):
-            return f'<span class="ingr{ingr_index}">{text}</span>'
+            wrapped_index = (ingr_index - 1) % NUM_COLORS + 1
+            return f'<span class="ingr{wrapped_index}">{text}</span>'
 
         if not seen:
             step.ingredients.append(ingr_span(ingr_text))
