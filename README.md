@@ -63,7 +63,7 @@ To see where the ingredients comes from:
 .\cli.ps1 update-shopping-links --origins
 ```
 
-#### Update shopping links
+#### Generate static page
 
 ```shell
 .\cli.ps1 generate-static generated/
